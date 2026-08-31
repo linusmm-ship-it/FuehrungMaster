@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Klausurtrainer · Führung, Motivation &amp; Menschenbilder</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --paper:#F6F1E5;
+  --paper-raised:#FCFAF3;
+  --paper-sunken:#EEE7D6;
+  --navy:#182338;
+  --navy-2:#374964;
+  --rule:#DCD1B7;
+  --rule-strong:#C6B995;
+  --muted:#726A57;
+  --green:#3E6B4C;
+  --green-bg:#E5EBDD;
+  --green-line:#9EBB99;
+  --red:#A2402F;
+  --red-bg:#F3E0D6;
+  --red-line:#D8A798;
+  --amber:#93691E;
+  --amber-bg:#F0E3C4;
+  --amber-line:#D9BE7E;
+  --serif:'Newsreader','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+  --mono:'IBM Plex Mono','SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  --radius:3px;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--navy);
+  font-family:var(--serif);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+::selection{background:var(--navy); color:var(--paper);}
+
+a{color:inherit;}
+button{font-family:inherit;}
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip:rect(0 0 0 0); white-space:nowrap;
+}
+
+:focus-visible{
+  outline:2px solid var(--navy);
+  outline-offset:2px;
+}
+
+/* ---------- App shell ---------- */
+#app{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ---------- Header ---------- */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:var(--paper);
+  border-bottom:1px solid var(--rule-strong);
+}
+.header-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+  padding:0.9rem 1.25rem 0.7rem;
+  max-width:1280px;
+  margin:0 auto;
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:0.15rem;
+  min-width:0;
+}
+.brand-title{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:1.28rem;
+  line-height:1.2;
+  letter-spacing:0.01em;
+}
+.brand-sub{
+  font-family:var(--mono);
+  font-size:0.68rem;
+  color:var(--muted);
+  letter-spacing:0.02em;
+}
+.header-controls{
+  display:flex;
+  gap:0.6rem;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+/* Toggle switch */
+.toggle{
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+  border:1px solid var(--rule-strong);
+  background:var(--paper-raised);
+  border-radius:999px;
+  padding:0.28rem 0.5rem 0.28rem 0.75rem;
+}
+.toggle-label{
+  font-family:var(--mono);
+  font-size:0.66rem;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.toggle-switch{
+  position:relative;
+  width:52px;
+  height:26px;
+  border-radius:999px;
+  background:var(--navy-2);
+  border:none;
+  cursor:pointer;
+  padding:0;
+  flex-shrink:0;
+}
+.toggle-switch::before{
+  content:attr(data-off);
+  position:absolute;
+  right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  font-family:var(--mono);
+  font-size:0.52rem;
+  color:var(--paper);
+  opacity:0.75;
+}
+.toggle-switch[aria-checked="true"]::before{
+  content:attr(data-on);
+  left:6px;
+  right:auto;
+}
+.toggle-switch[aria-checked="true"]{
+  background:var(--navy);
+}
+.toggle-knob{
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:var(--paper);
+  transition:transform 0.16s ease;
+  box-shadow:0 1px 2px rgba(0,0,0,0.25);
+}
+.toggle-switch[aria-checked="true"] .toggle-knob{
+  transform:translateX(26px);
+}
+
+.header-bottom{
+  border-top:1px solid var(--rule);
+  padding:0.55rem 1.25rem;
+  max-width:1280px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+.progress-meta{
+  font-family:var(--mono);
+  font-size:0.74rem;
+  color:var(--navy-2);
+  white-space:nowrap;
+}
+.progress-track{
+  flex:1 1 160px;
+  height:6px;
+  background:var(--paper-sunken);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  overflow:hidden;
+  min-width:100px;
+}
+.progress-fill{
+  height:100%;
+  background:var(--navy);
+  width:0%;
+  transition:width 0.25s ease;
+}
+.header-stats{
+  font-family:var(--mono);
+  font-size:0.74rem;
+  display:flex;
+  gap:0.85rem;
+  white-space:nowrap;
+}
+.stat-correct{color:var(--green);}
+.stat-wrong{color:var(--red);}
+.stat-open{color:var(--amber);}
+
+/* ---------- Layout grid ---------- */
+.app-grid{
+  max-width:1280px;
+  width:100%;
+  margin:0 auto;
+  flex:1;
+  display:grid;
+  gap:1.5rem;
+  padding:1.5rem 1.25rem 3rem;
+}
+[data-layout="desktop"] .app-grid{
+  grid-template-columns:300px 1fr;
+  align-items:start;
+}
+[data-layout="mobile"] .app-grid{
+  grid-template-columns:1fr;
+  padding:1rem 0.9rem 2.5rem;
+  gap:1rem;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  border:1px solid var(--rule-strong);
+  background:var(--paper-raised);
+  border-radius:var(--radius);
+  padding:1.1rem;
+  position:sticky;
+  top:112px;
+  max-height:calc(100vh - 130px);
+  overflow-y:auto;
+}
+[data-layout="mobile"] .sidebar{
+  position:fixed;
+  inset:0;
+  top:0;
+  z-index:50;
+  max-height:none;
+  height:100vh;
+  border-radius:0;
+  transform:translateX(-100%);
+  transition:transform 0.2s ease;
+  overflow-y:auto;
+}
+[data-layout="mobile"] .sidebar.is-open{
+  transform:translateX(0);
+}
+.sidebar-close{
+  display:none;
+}
+[data-layout="mobile"] .sidebar-close{
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:0.5rem;
+}
+
+.sidebar h2{
+  font-family:var(--mono);
+  font-size:0.72rem;
+  font-weight:600;
+  text-transform:none;
+  letter-spacing:0.02em;
+  color:var(--muted);
+  margin:0 0 0.6rem;
+  padding-bottom:0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+.sidebar-section + .sidebar-section{
+  margin-top:1.4rem;
+}
+
+.jump-open-btn{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:var(--paper-sunken);
+  border:1px solid var(--rule-strong);
+  border-radius:var(--radius);
+  padding:0.55rem 0.7rem;
+  font-family:var(--mono);
+  font-size:0.72rem;
+  color:var(--navy);
+  cursor:pointer;
+  margin-bottom:0.9rem;
+}
+.jump-open-btn:hover{background:var(--rule);}
+.jump-open-btn:disabled{opacity:0.4; cursor:default;}
+
+.einheit-block + .einheit-block{margin-top:0.9rem;}
+.einheit-title{
+  font-family:var(--mono);
+  font-size:0.68rem;
+  color:var(--muted);
+  margin-bottom:0.4rem;
+  display:flex;
+  justify-content:space-between;
+}
+.einheit-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(26px, 1fr));
+  gap:4px;
+}
+.q-dot{
+  aspect-ratio:1;
+  border:1px solid var(--rule-strong);
+  background:var(--paper);
+  border-radius:2px;
+  font-family:var(--mono);
+  font-size:0.6rem;
+  color:var(--navy-2);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  min-width:24px;
+  min-height:24px;
+}
+.q-dot:hover{border-color:var(--navy);}
+.q-dot.is-current{
+  outline:2px solid var(--navy);
+  outline-offset:1px;
+}
+.q-dot.status-correct{background:var(--green-bg); border-color:var(--green-line); color:var(--green);}
+.q-dot.status-wrong{background:var(--red-bg); border-color:var(--red-line); color:var(--red);}
+.q-dot.status-saved{background:var(--amber-bg); border-color:var(--amber-line); color:var(--amber);}
+
+.stats-table{
+  width:100%;
+  border-collapse:collapse;
+  font-family:var(--mono);
+  font-size:0.7rem;
+}
+.stats-table th, .stats-table td{
+  text-align:left;
+  padding:0.3rem 0.2rem;
+  border-bottom:1px solid var(--rule);
+}
+.stats-table th{color:var(--muted); font-weight:500;}
+.stats-table td.num{text-align:right;}
+
+.eval-open-btn{
+  display:block;
+  width:100%;
+  text-align:center;
+  background:var(--navy);
+  color:var(--paper);
+  border:1px solid var(--navy);
+  border-radius:var(--radius);
+  padding:0.7rem;
+  font-family:var(--mono);
+  font-size:0.72rem;
+  cursor:pointer;
+  margin-top:1.2rem;
+}
+.eval-open-btn:hover{background:var(--navy-2);}
+
+.sidebar-backdrop{
+  display:none;
+}
+[data-layout="mobile"] .sidebar-backdrop.is-open{
+  display:block;
+  position:fixed;
+  inset:0;
+  background:rgba(24,35,56,0.35);
+  z-index:40;
+}
+
+.mobile-overview-btn{
+  display:none;
+}
+[data-layout="mobile"] .mobile-overview-btn{
+  display:inline-flex;
+}
+
+/* ---------- Quiz panel ---------- */
+.quiz-panel{min-width:0;}
+.einheit-label{
+  font-family:var(--mono);
+  font-size:0.75rem;
+  color:var(--muted);
+  margin-bottom:0.6rem;
+}
+.question-card{
+  border:1px solid var(--rule-strong);
+  background:var(--paper-raised);
+  border-radius:var(--radius);
+  padding:1.75rem;
+}
+[data-layout="mobile"] .question-card{padding:1.25rem;}
+
+.question-number{
+  font-family:var(--mono);
+  font-size:0.7rem;
+  color:var(--muted);
+  margin-bottom:0.9rem;
+}
+.question-text{
+  font-family:var(--serif);
+  font-size:1.32rem;
+  line-height:1.58;
+  color:var(--navy);
+  max-width:66ch;
+}
+[data-layout="mobile"] .question-text{font-size:1.14rem; line-height:1.55;}
+
+.answer-row{
+  display:flex;
+  gap:0.9rem;
+  margin-top:1.6rem;
+}
+[data-layout="mobile"] .answer-row{
+  flex-direction:column;
+}
+.answer-btn{
+  flex:1;
+  border:1.5px solid var(--rule-strong);
+  background:var(--paper);
+  border-radius:var(--radius);
+  padding:1rem 1.1rem;
+  font-family:var(--mono);
+  font-size:0.9rem;
+  letter-spacing:0.02em;
+  color:var(--navy);
+  cursor:pointer;
+  min-height:56px;
+  text-align:center;
+  transition:border-color 0.12s ease, background 0.12s ease;
+}
+.answer-btn:hover{border-color:var(--navy-2);}
+.answer-btn.is-chosen-neutral{
+  background:var(--navy);
+  color:var(--paper);
+  border-color:var(--navy);
+}
+.answer-btn.is-correct{
+  background:var(--green-bg);
+  border-color:var(--green);
+  color:var(--green);
+  font-weight:600;
+}
+.answer-btn.is-wrong{
+  background:var(--red-bg);
+  border-color:var(--red);
+  color:var(--red);
+  font-weight:600;
+}
+.answer-btn.is-correct-hint{
+  border-color:var(--green);
+  color:var(--green);
+}
+
+.feedback-panel{
+  margin-top:1.4rem;
+  border-left:3px solid var(--rule-strong);
+  padding:0.85rem 1.1rem;
+  background:var(--paper-sunken);
+  border-radius:0 var(--radius) var(--radius) 0;
+}
+.feedback-panel.fb-correct{border-left-color:var(--green); background:var(--green-bg);}
+.feedback-panel.fb-wrong{border-left-color:var(--red); background:var(--red-bg);}
+.feedback-panel.fb-saved{border-left-color:var(--amber); background:var(--amber-bg);}
+
+.feedback-status{
+  font-family:var(--mono);
+  font-size:0.85rem;
+  font-weight:600;
+  letter-spacing:0.03em;
+  margin-bottom:0.35rem;
+}
+.feedback-status.fb-correct{color:var(--green);}
+.feedback-status.fb-wrong{color:var(--red);}
+.feedback-status.fb-saved{color:var(--amber);}
+
+.feedback-correction{
+  font-family:var(--mono);
+  font-size:0.76rem;
+  color:var(--navy-2);
+  margin-bottom:0.4rem;
+}
+.feedback-note{
+  font-family:var(--serif);
+  font-size:0.98rem;
+  line-height:1.5;
+  color:var(--navy);
+}
+
+.nav-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:0.8rem;
+  margin-top:1.6rem;
+  flex-wrap:wrap;
+}
+.nav-btn{
+  border:1px solid var(--rule-strong);
+  background:var(--paper-raised);
+  border-radius:var(--radius);
+  padding:0.6rem 1rem;
+  font-family:var(--mono);
+  font-size:0.76rem;
+  cursor:pointer;
+  color:var(--navy);
+}
+.nav-btn:hover:not(:disabled){border-color:var(--navy);}
+.nav-btn:disabled{opacity:0.35; cursor:default;}
+.nav-center{
+  display:flex;
+  gap:0.6rem;
+  flex-wrap:wrap;
+}
+.link-btn{
+  background:none;
+  border:none;
+  font-family:var(--mono);
+  font-size:0.72rem;
+  color:var(--navy-2);
+  text-decoration:underline;
+  cursor:pointer;
+  padding:0.3rem;
+}
+
+/* ---------- Evaluation view ---------- */
+.evaluation-panel{min-width:0;}
+.eval-header{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:0.6rem;
+  margin-bottom:1.2rem;
+}
+.eval-header h1{
+  font-family:var(--serif);
+  font-size:1.5rem;
+  font-weight:600;
+  margin:0;
+}
+.eval-summary{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
+  gap:0.9rem;
+  margin-bottom:1.8rem;
+}
+.eval-metric{
+  border:1px solid var(--rule-strong);
+  background:var(--paper-raised);
+  border-radius:var(--radius);
+  padding:0.9rem 1rem;
+}
+.eval-metric .num{
+  font-family:var(--mono);
+  font-size:1.6rem;
+  font-weight:600;
+  color:var(--navy);
+  line-height:1;
+}
+.eval-metric.metric-correct .num{color:var(--green);}
+.eval-metric.metric-wrong .num{color:var(--red);}
+.eval-metric.metric-open .num{color:var(--amber);}
+.eval-metric .label{
+  font-family:var(--mono);
+  font-size:0.66rem;
+  color:var(--muted);
+  margin-top:0.3rem;
+}
+
+.eval-section-title{
+  font-family:var(--serif);
+  font-size:1.1rem;
+  font-weight:600;
+  margin:1.8rem 0 0.8rem;
+  padding-bottom:0.4rem;
+  border-bottom:1px solid var(--rule-strong);
+}
+.eval-table{
+  width:100%;
+  border-collapse:collapse;
+  font-family:var(--mono);
+  font-size:0.78rem;
+}
+.eval-table th, .eval-table td{
+  text-align:left;
+  padding:0.5rem 0.6rem;
+  border-bottom:1px solid var(--rule);
+}
+.eval-table td.num, .eval-table th.num{text-align:right;}
+
+.error-card{
+  border:1px solid var(--rule-strong);
+  border-left:3px solid var(--red);
+  background:var(--paper-raised);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:1rem 1.2rem;
+  margin-bottom:0.8rem;
+}
+.error-card .meta{
+  font-family:var(--mono);
+  font-size:0.68rem;
+  color:var(--muted);
+  margin-bottom:0.4rem;
+}
+.error-card .stmt{
+  font-family:var(--serif);
+  font-size:1.02rem;
+  line-height:1.5;
+  margin-bottom:0.5rem;
+}
+.error-card .rows{
+  font-family:var(--mono);
+  font-size:0.74rem;
+  margin-bottom:0.4rem;
+}
+.error-card .rows .wrong-val{color:var(--red);}
+.error-card .rows .right-val{color:var(--green);}
+.error-card .note{
+  font-family:var(--serif);
+  font-size:0.92rem;
+  color:var(--navy-2);
+  font-style:italic;
+  margin-bottom:0.5rem;
+}
+.error-card .jump{
+  font-family:var(--mono);
+  font-size:0.7rem;
+  color:var(--navy);
+  text-decoration:underline;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:0;
+}
+.no-errors{
+  font-family:var(--serif);
+  font-style:italic;
+  color:var(--muted);
+  padding:1rem 0;
+}
+
+.eval-actions{
+  display:flex;
+  gap:0.8rem;
+  margin-top:2rem;
+  flex-wrap:wrap;
+}
+
+.hint-banner{
+  font-family:var(--mono);
+  font-size:0.72rem;
+  color:var(--muted);
+  background:var(--paper-sunken);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:0.6rem 0.8rem;
+  margin-bottom:1rem;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="site-header">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-title">Klausurtrainer</div>
+        <div class="brand-sub">Führung · Motivation · Menschenbilder — 201 Aussagen</div>
+      </div>
+      <div class="header-controls">
+        <!-- Neuer Toggle: Zufall -->
+        <div class="toggle">
+          <span class="toggle-label">Zufall</span>
+          <button type="button" id="randomToggle" class="toggle-switch" data-off="AUS" data-on="EIN" role="switch" aria-checked="false" aria-label="Zufallsmodus ein- oder ausschalten">
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+        <div class="toggle">
+          <span class="toggle-label">Ansicht</span>
+          <button type="button" id="layoutToggle" class="toggle-switch" data-off="PC" data-on="MOB" role="switch" aria-checked="false" aria-label="Darstellung umschalten zwischen Mobil und PC/Querformat">
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+        <div class="toggle">
+          <span class="toggle-label">Feedback</span>
+          <button type="button" id="feedbackToggle" class="toggle-switch" data-off="AUS" data-on="EIN" role="switch" aria-checked="true" aria-label="Direkte Rückmeldung ein- oder ausschalten">
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="header-bottom">
+      <span class="progress-meta" id="progressMeta">Frage 001 / 201</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="header-stats">
+        <span class="stat-correct" id="statCorrect">✓ 0</span>
+        <span class="stat-wrong" id="statWrong">✗ 0</span>
+        <span class="stat-open" id="statOpen">○ 0</span>
+        <span id="statPercent">0%</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-grid" id="appGrid">
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-close">
+        <button type="button" class="nav-btn" id="sidebarCloseBtn">Schließen ✕</button>
+      </div>
+      <div class="sidebar-section">
+        <h2>Übersicht</h2>
+        <button type="button" class="jump-open-btn" id="jumpOpenBtn">→ Nächste offene Frage</button>
+        <div id="einheitGrids"></div>
+      </div>
+      <div class="sidebar-section">
+        <h2>Trefferquote nach Einheit</h2>
+        <table class="stats-table" id="einheitStatsTable">
+          <thead><tr><th>Einheit</th><th class="num">Beantw.</th><th class="num">Richtig</th><th class="num">Quote</th></tr></thead>
+          <tbody id="einheitStatsBody"></tbody>
+        </table>
+        <button type="button" class="eval-open-btn" id="openEvalBtn">Gesamtauswertung öffnen</button>
+      </div>
+    </aside>
+
+    <main class="quiz-panel" id="quizPanel">
+      <!-- rendered by JS -->
+    </main>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [{"id": 1, "einheit": 1, "frage": "Wirkt das Führungssubstitut des Aufgabenzuschnitts bzw. der Aufgabenstruktur wird aufgrund der intrinsischen Motivation des Mitarbeiters zwar ein aufgabenorientiertes Verhalten überflüssig, ein beziehungsorientiertes bleibt jedoch unersetzlich.", "correct": "falsch", "note": "beide sind notwendig"}, {"id": 2, "einheit": 1, "frage": "Die Merkmale des Menschenbilds \"rational economic man\" nach Schein (1980) lassen sich den Annahmen der Theorie X von McGregor (1973) zuordnen.", "correct": "richtig", "note": null}, {"id": 3, "einheit": 1, "frage": "Von Vertrauen kann nur gesprochen werden, wenn die Möglichkeit besteht, dass dieses Vertrauen enttäuscht oder gebrochen werden kann.", "correct": "richtig", "note": null}, {"id": 4, "einheit": 1, "frage": "Die Social Information Processing Theory nach Medvedeff und Lord (2007) konzipiert Führung als ein Kommunikationsphänomen.", "correct": "falsch", "note": "Wahrnehmungsphänomen"}, {"id": 5, "einheit": 1, "frage": "Im Sinne einer \"Führung von oben\" stellen der Verweis auf geltende Werte und Normen, eine anregende Präsentation, die Konsultation des Vorgesetzten sowie die Koalitionsbildung mit Gleichgesinnten typische Einflussstrategien von Führenden dar.", "correct": "falsch", "note": "das ist Fürhung von UNTEN"}, {"id": 6, "einheit": 1, "frage": "Eine charismatische Führung ist stets planbar, weshalb die Stabilität bei der Ausprägung der Führungsbeziehungen für Organisationen, die eher auf Stabilität beruhen, eine besondere Chance darstellt.", "correct": "falsch", "note": "sie ist eben NICHT planbar"}, {"id": 7, "einheit": 1, "frage": "Das Steuerungsobjekt von sowohl Personalführung als auch Organisation als Form der Verhaltensbeeinflussung sind die Organisationsmitglieder.", "correct": "richtig", "note": null}, {"id": 8, "einheit": 1, "frage": "Im Mittelpunkt der Substitutionstheorie der Führung steht die Behauptung, dass bestimmte Führungssubstitute die Eintrittswahrscheinlichkeit für gewünschte Verhaltensweisen der Organisationsmitglieder bestimmen.", "correct": "falsch", "note": "zeigt Bedingungen auf unter denen Führungsverhalten kontraproduktiv oder unnötig wird"}, {"id": 9, "einheit": 1, "frage": "Nach Kelleys Grundlegung der Attributionstheorie (1973) können unter Berücksichtigung der Informationsverarbeitungsregeln Ereignisse bzw. Handlungen ausschließlich auf die Person oder die Situation attribuiert werden.", "correct": "falsch", "note": "nein, es gibt auch die Entitätenattribution"}, {"id": 10, "einheit": 1, "frage": "Die Herausbildung von unterschiedlichen hierarchischen Positionen innerhalb einer Organisation mit jeweils unterschiedlichem Ansehen und Einkommen kann in Anlehnung an Türk (1995) dem Medium der \"Bürokratie\" zur entpersonalisierten Führung zugeordnet werden.", "correct": "falsch", "note": "Medium der Differenzierung"}, {"id": 11, "einheit": 1, "frage": "Durch die organisationale Potentialkontrolle, eine Form der sozialen Kontrolle nach Türk (1981), kann die Organisation Handlungen der Organisationsmitglieder direkt auf persönlichem, bspw. Durch Vorgesetzte oder Kollegen, oder unpersönlichem Weg, bspw. durch Strukturen, die die Freiheitsgerade beim Handlungsvollzug der Organisationsmitglieder einschränken, kontrollieren.", "correct": "falsch", "note": "das beschriebene ist die organisationale Handlungskontrolle"}, {"id": 12, "einheit": 1, "frage": "Die Attributionstheorie fand sowohl in der Forschungsrichtung zur Identifikation einer Person als Führungskraft und damit verbundener Prozesse als auch in der Forschungsrichtung zur Eischätzung der Leistung von Geführten durch Führungskräfte Anwendung.", "correct": "richtig", "note": null}, {"id": 13, "einheit": 1, "frage": "In einer LMX-Beziehung repräsentiert ein transaktionales Austauschverhältnis eine optimale Beziehungsqualität.", "correct": "falsch", "note": "der transaktionale Aspekt muss überwunden werden für eine hochqualitative LMX-Beziehung"}, {"id": 14, "einheit": 1, "frage": "Ersetzt ein Führungssituationsfaktor ein bestimmtes Führungsverhalten ganz oder teilweise, wird dieses also im Extremfall überflüssig oder sogar kontraproduktiv, spricht man auch von einer moderierenden Wirkung der Führungssituation.", "correct": "falsch", "note": "man soricht in diesem Fall von einer substituierenden Wirkung"}, {"id": 15, "einheit": 1, "frage": "Von der Akzeptanz von Beeinflussungsversuchen durch eine andere Person kann bereits gesprochen werden, sofern eine tolerierende Einstellung gegenüber diesen besteht.", "correct": "falsch", "note": "nicht nur tolerierende Einstellung, sondern auch Bereitschaft das eigene Verhalten entsprechend des Einflussversuches zu ändern"}, {"id": 16, "einheit": 1, "frage": "Arbeitszufriedenheit der Mitarbeiter und Status der Führenden sind Bemessungsgrößen, die, in Anlehnung an Barnard (1938) und dessen Effizienzbetrachtung der Wirksamkeit von Führung, die Dimension der \"ökonomischen Effizienz\" charakterisieren.", "correct": "falsch", "note": "soziale Effizienz"}, {"id": 17, "einheit": 1, "frage": "Vertrauen reduziert Misstrauen und soziale Komplexität in einer Führungsbeziehung, da es die Vielzahl von Handlungsalternativen auf kooperatives Verhalten reduziert und erste Vorleistungen möglich macht.", "correct": "richtig", "note": null}, {"id": 18, "einheit": 1, "frage": "Halten sich Macht und Gegenmacht in einer Führungsbeziehung stets die Waage, wäre eine systematische Einflussnahme im Sinne der Führung nicht möglich.", "correct": "richtig", "note": null}, {"id": 19, "einheit": 1, "frage": "Liegt das Menschenbild \"rational economic man\" gemäß der Menschenbildtypologie nach Schein (1980) vor, dann kommt einem Manager vor allem die Rolle als Diagnostiker zu.", "correct": "falsch", "note": "Diagnostiker kommen beim \"complex man\" vor."}, {"id": 20, "einheit": 1, "frage": "Liegt das Menschenbild \"social man\" gemäß der Menschenbildtypologie nach Schein (1980) vor, dann besitzt ein Manager vor allem eine Rolle als Vermittler zwischen Vorgesetzten und Untergebenen.", "correct": "richtig", "note": null}, {"id": 21, "einheit": 1, "frage": "Im Sinne der Substitutionstheorie der Führung ist der Bedarf an direkter Führung reduzierbar, wenn bspw. professionelle Mitarbeiter ausgewählt werden und Aufgaben so zugeschnitten werden können, dass sie automatisches Feedback generieren.", "correct": "richtig", "note": null}, {"id": 22, "einheit": 1, "frage": "Gemäß Türk (1995) sind Organisationen zur Verhaltenskontrolle ausschließlich auf hierzu besonders beauftragte Personen angewiesen.", "correct": "falsch", "note": "Türk hat die Medien der entpersonalisierten Führung \"entworfen\". Bürokratie, Differenzierung, Technologie, Organisationskultur"}, {"id": 23, "einheit": 1, "frage": "Aus der Identitätstheorie der Führung lässt sich ableiten, dass derjenige die Führung der Gruppe übernimmt, der die an Ihn herangetragenen sozialen Erwartungen am wenigsten erfüllt.", "correct": "falsch", "note": "der mit der stärksten Prototypikalität übernimmt die Führung"}, {"id": 24, "einheit": 1, "frage": "Innerhalb einer sozialen Gruppe werden andere Menschen nicht mehr als einzigartige und facettenreiche Individuen wahrgenommen, sondern als Mitglieder einer Gemeinschaft.", "correct": "richtig", "note": null}, {"id": 25, "einheit": 1, "frage": "Personalführung und Organisation stehen sowohl in einem Wechselverhältnis als auch in einem substitutionalen Verhältnis.", "correct": "richtig", "note": null}, {"id": 26, "einheit": 1, "frage": "Leistung, Kohäsion und Zufriedenheit sind in Anlehnung an Kehr (2000) voneinander abgrenzbare gruppenbezogene Effektivitätskriterien.", "correct": "richtig", "note": null}, {"id": 27, "einheit": 1, "frage": "Nach Lewicki und Bunker (1996) werden grundsätzlich zwei Vertrauensqualitäten unterschieden: Das kalkülbasierte Vertrauen und das wissensbasierte Vertrauen.", "correct": "falsch", "note": "3 Vertrauensqualitäten: kalkülbasiert, wissensbasiert und identifikationsbasiert"}, {"id": 28, "einheit": 1, "frage": "Der interaktionistische Zugang besitzt eine hohe Erklärungskraft bei stark institutionalisierten und formalisierten Situationen.", "correct": "falsch", "note": "Der konventionelle struktur-funktionalistische Zugang kann eher für stark institutionalisierte und formalisierte Situationen als fruchtbar angesehen werden. Dahingegen hat der interaktionistische Zugang einen hohen Erklärungsgehalt, wenn es um relativ offene, wenig strukturierte und vordefinierte Situationen oder die Analyse erstmaliger Rollenbildungen (Rollendifferenzierung) geht."}, {"id": 29, "einheit": 1, "frage": "Nach heutigem Stand der Forschung ist anzunehmen, dass über die Herausbildung von Führung in Gruppen Evolutionsvorteile generiert werden und Führung so einen Beitrag zur Existenz des Kollektivs leistet.", "correct": "richtig", "note": null}, {"id": 30, "einheit": 1, "frage": "Im Sinne der Substitutionstheorie der Führung bewirken Führungssubstitute, dass ein beabsichtigtes Führungsverhalten nicht ausgeübt werden kann.", "correct": "falsch", "note": "Das beschreibt die Neutralisierer."}, {"id": 31, "einheit": 1, "frage": "Im Sinne der Substitutionstheorie der Führung können Organisationen die Leistungen ihrer Mitglieder insbesondere durch die Bereitstellung von Informationen sowie das Setzen von Anreizen beeinflussen.", "correct": "richtig", "note": null}, {"id": 32, "einheit": 1, "frage": "Wird Effektivität als Maß der Zielerreichung verstanden, dann sind Effektivität und Effizienz identisch, sofern die Zielsetzung in der Erreichung einer bestmöglichen Produktivität besteht.", "correct": "richtig", "note": null}, {"id": 33, "einheit": 1, "frage": "Nach Lewicki und Bunker (1996) ist das identifikationsbasierte Vertrauen die niedrigste erreichbare Stufe des Vertrauens.", "correct": "falsch", "note": "nein, das ist die höchste. Die niedrigste ist das kalkülbasierte."}, {"id": 34, "einheit": 1, "frage": "Inhaber bestimmter sozialer Positionen werden regelmäßig mit Bündeln normativer Verhaltenserwartungen konfrontiert.", "correct": "richtig", "note": null}, {"id": 35, "einheit": 1, "frage": "Das grundlegende Menschenbild der charismatischen Führung sieht Menschen genauso durch ihr Zutrauen in die Zukunft motiviert, wie durch eine rationale Kalkulation von Erfolg oder Misserfolg.", "correct": "richtig", "note": null}, {"id": 36, "einheit": 1, "frage": "Nach der Theorie zur sozialen Kategorisierung nach Turner (1987) definieren sich Individuen in Gruppen ausschließlich über ihre personale Identität.", "correct": "falsch", "note": "sie definieren sich über ihre sozialia identität"}, {"id": 37, "einheit": 1, "frage": "Die professionelle Orientierung der Mitarbeiter der Aufgabenzuschnitt, automatisches Leistungs-Feedback und Arbeitsgruppen werden im Rahmen der Substitutionstheorie der Führung als Führungsneutralisierer bezeichnet.", "correct": "falsch", "note": "das sind Führungssubstitute"}, {"id": 38, "einheit": 1, "frage": "Weil Organisationsmitglieder die Organisationsziele auch teilen können, stellt die Personalführung keine Form der Fremdsteuerung im Sinne der Verhaltensbeeinflussung dar.", "correct": "falsch", "note": null}, {"id": 39, "einheit": 1, "frage": "In der Machtbasentypologie von Yukl und Falbe (1991) lassen sich Unterschiede zwischen einer charismatischen Macht sowie der Identifikationsmacht allenfalls an Nunancen erkennen.", "correct": "richtig", "note": null}, {"id": 40, "einheit": 1, "frage": "Gemäß dem Kriterium der \"Akzeptanz\" der Führung ist Fürhung eine von der Hierarchie weitestgehend unabhängige Kategorie.", "correct": "richtig", "note": null}, {"id": 41, "einheit": 1, "frage": "In der Theorie X von McGregor (1973) wird ein Menschenbild beschrieben, für das die Befriedigung von Ich-Bedürfnissen und das Streben nach Selbstverwirklichung eines der wichtigsten Arbeitsanreize darstellen.", "correct": "falsch", "note": "das beschreibt Theorie Y"}, {"id": 42, "einheit": 1, "frage": "Dem Kriterium „Akzeptanz“ der Führung folgend sind Vorgesetzte über ihre hierarchische Position immer auch Führende.", "correct": "falsch", "note": null}, {"id": 43, "einheit": 1, "frage": "Der Erfolg von Führung lässt sich grundsätzlich auf den drei Ebenen des Indivuduums, der Gruppe bzw. der Dyade sowie der Organisation erfassen.", "correct": "richtig", "note": null}, {"id": 44, "einheit": 1, "frage": "Empirisch steht die Wahrnehmung einer Führungsperson als gerecht mit der Akzeptanz selbiger im Zusammenhang, nicht aber mit der Ausprägung des Commitments eines Geführten.", "correct": "falsch", "note": null}, {"id": 45, "einheit": 1, "frage": "Der außerhalb der unmittelbaren Führungsbeziehung liegende Aspekt des Organisationsgrades ist ein Beispiel für einen sekundären Führungssituationsfaktor.", "correct": "falsch", "note": "Organisationsgrad gehört zu den primären Führungssituationsfaktoren, genauer zu Punkt 3 Interaktionsumfeld"}, {"id": 46, "einheit": 1, "frage": "Den Effekt einer weit überdurchschnittlichen Leistung in Folge einer charismatischen Führung bezeichnen House und Shamir (1995) als Volitionssyndrom.", "correct": "falsch", "note": "Motivationssyndrom"}, {"id": 47, "einheit": 1, "frage": "Nach der Dyadentheorie entwickeln sich Führungsbeziehungen entlang der drei Phasen Rollenübernahme, Rollenbildung und Rollenstabilisierung.", "correct": "richtig", "note": null}, {"id": 48, "einheit": 1, "frage": "Die Verhaltensbeeinflussung durch Organisation zeichnet sich im Gegensatz zur Personalführung durch eine situative Steuerungsart aus, bei der versucht wird, zeitnah unter jeweils konkreten situationalen Bedingungen eine Steuerung bezogen auf den jeweiligen Einzelfall zu erreichen.", "correct": "falsch", "note": "das beschreibt die Personalführung nach Tabelle Steuerungsart, -objekt und -mittel"}, {"id": 49, "einheit": 1, "frage": "Im Unterschied zur indirekten Führung ist die direkte Führung wesentlich anonymer und unmerklicher.", "correct": "falsch", "note": null}, {"id": 50, "einheit": 1, "frage": "Nach heutigem Stand der Forschung ist anzunehmen, dass über die Herausbildung von Führung in Gruppen Evolutionsvorteile generiert werden und Führung so einen Beitrag zur Existenz des Kollektivs leistet.", "correct": "richtig", "note": null}, {"id": 51, "einheit": 1, "frage": "Da einem blind Vertrauendem die Unsicherheit der Situation unvertraut ist und daher ungewiss ist, ob die Möglichkeit besteht, dass dieses Vertrauen gebrochen werden könnte, ist das umgangssprachliche „blinde Vertrauen“ völlig zutreffend.", "correct": "falsch", "note": "blindes Vertrauen meint eben nicht die Klarheit über die Möglichkeit des Vertrauensnbruchs, sondern blindes und bedingungsloses Vertrauen"}, {"id": 52, "einheit": 1, "frage": "Veränderungen demographischer Art rufen spezifische Auswirkungen auf die Führungsbeziehungen hervor und werden vor diesem Hintergrund den primären Führungssituationsfaktoren zugeordnet.", "correct": "falsch", "note": "sekundärer Führungssituationsfaktor"}, {"id": 53, "einheit": 1, "frage": "Die Entstehung einer charismatischen Führungsbeziehung wird nach allgemeiner Einschätzung vor allem begünstigt durch eine krisenhafte Situation auf der Mikro-Ebene.", "correct": "falsch", "note": "Meso- oder Makroebene"}, {"id": 54, "einheit": 1, "frage": "Im Sinne der Selbstkategorisierungstheorie nach Turner (1987) werden Individuen in Gruppen über die Ausbildung einer sozialen Identität nicht mehr als einzigartige Individuen wahrgenommen, sondern als Mitglieder einer Gemeinschaft, was als „Desozialisation“ bezeichnet wird.", "correct": "falsch", "note": "Die Ausbildung einer sozialen Identität ist immer auch mit einer Depersonalisation verbunden."}, {"id": 55, "einheit": 1, "frage": "Organisationen bieten zwar einen strukturierten Raum für Führung, sind aber erklärungs- und umsetzungsbedürftig.", "correct": "richtig", "note": null}, {"id": 56, "einheit": 1, "frage": "Die Identitätstheorie der Führung erklärt gut, warum sich Abweichungen von der Gruppennorm gerade im Kontext einer Organisation ergeben.", "correct": "falsch", "note": null}, {"id": 57, "einheit": 1, "frage": "Arbeitsproduktivität und Rentabilität sind zwei Leistungsziele, die sich, in Anlehnung an Barnard (1983) und dessen Effizienzbetrachtung der Wirksamkeit von Führung, der Dimension der \"ökonomischen Effizienz\" zuordnen lassen.", "correct": "richtig", "note": null}, {"id": 58, "einheit": 1, "frage": "In Anlehnung an Türk (1995) lassen sich vier Medien einer entpersonalisierten Führung unterscheiden: Technologie, Bürokratie, Differenzierung und Kultur.", "correct": "richtig", "note": null}, {"id": 59, "einheit": 1, "frage": "Personalführung ist auch deshalb notwendig, weil organisationale Rgeln und Strukturen bis zu einem gewissen Grad unvollkommen bleiben.", "correct": "richtig", "note": null}, {"id": 60, "einheit": 1, "frage": "Geregelte Verhaltensmuster und verfestigte Handlungsstränge, die als selbstverständlich wahrgenommen werden und gesamtgesellschaftliche Akzeptanz finden, werden auch als soziale Institutionen bezeichnet.", "correct": "richtig", "note": "bestätigt durch EA Sina"}, {"id": 61, "einheit": 1, "frage": "Bei der mediierenden Wirkung eines Führungssituationsfaktors besteht zwar ein direkter Zusammenhang zwischen dem Führungsverhalten und den Führungssituationsfaktoren, nicht jedoch zwischen dem Führungsverhalten und dem Führungserfolg.", "correct": "richtig", "note": null}, {"id": 62, "einheit": 1, "frage": "Zu den zentralen Wirkungsweisen der charismatischen Führung zählen die sog. „integrationsbezogenen Wirkungen“, die faktisch eine Konflikt-Begrenzung innerhalb der Geführtengruppe bewirken.", "correct": "richtig", "note": null}, {"id": 63, "einheit": 1, "frage": "Die Attraktivität einer Gruppenmitgliedschaft für die soziale Identität ist unabhängig von anderen Gruppen.", "correct": "falsch", "note": "Zitat \"Die Attraktivität einer Gruppenmitglidschaft bestimmt sich daher stets relativ zu anderen Gruppen\""}, {"id": 64, "einheit": 1, "frage": "Mit Blick auf die Verhaltenssteuerung reduziert ein aufgabenorientiertes Führungsverhalten das notwendige Ausmaß an formalen Aufgabenbeschreibungen.", "correct": "richtig", "note": null}, {"id": 65, "einheit": 1, "frage": "Organisationskultur als Medium entpersonalisierter indirekter Führung entfaltet aus Sicht der Führungskraft stets eine positive verhaltenssteuernde Wirkung.", "correct": "falsch", "note": "eben nicht wenn eine schlechte, ungesunde Kultur existiert"}, {"id": 66, "einheit": 1, "frage": "Eine wesentliche Aufgabe von Personalführung ist die situationsspezifische Interpretation organisationaler Regelungen und Konkretisierung individueller Verhaltenserwartungen.", "correct": "richtig", "note": null}, {"id": 67, "einheit": 1, "frage": "Im Rahmen der Identitätstheorie der Führung werden soziale Minderheiten, wenn Sie nicht dem Gruppenprototyp entsprechen, konsequent von der Führungsrolle ausgeschlossen.", "correct": "richtig", "note": null}, {"id": 68, "einheit": 1, "frage": "Abstrakt formulierte Aufgaben und Regeln, die an eine Vielzahl nicht genau bekannter Adressaten gerichtet sind, sind wichtige Steuerungsmittel von Organisationen zur Verhaltensbeeinflussung.", "correct": "richtig", "note": null}, {"id": 69, "einheit": 2, "frage": "Die Theorie der Bedürfnisshierarchie nach Maslow (1954) unterscheidet fünf Bedürfnissgruppen menschlicher Motive, die in hierarchischer Beziehung zueinander stehen, wobei die höchste Stufe die physiologischen Bedürfnisse enthält.", "correct": "falsch", "note": "niedrigste Stufe"}, {"id": 70, "einheit": 2, "frage": "Gemäß dem Ansatz des Führungsstilkontinuums zeichnet sich eine erfolgreiche Führungsperson dadurch aus, dass sie eine akkurate Einschätzung von sich selbst, von den Mitarbeitern sowie der Situation vornehmen, diese Faktoren zueinander in Beziehung setzen und ihr Führungsverhalten auf diese abstimmen kann.", "correct": "richtig", "note": null}, {"id": 71, "einheit": 2, "frage": "Neben den \"RRR des Führungsverhaltens\" unterscheiden Blake und McCanse (1995) im Rahmen des Verhaltensgittermodells ein viertes R, dass für die Regeneration der Führungsbeziehung steht.", "correct": "falsch", "note": "es steht für reflexion"}, {"id": 72, "einheit": 2, "frage": "Die Akzeptanz von Führungsinstrumenten kann in eine Indifferenzzone fallen, innerhalb derer der Einsatz dieser Instrumente unhinterfragt bleibt und damit faktisch akzeptiert wird.", "correct": "richtig", "note": null}, {"id": 73, "einheit": 2, "frage": "Das Vier-Seiten-Modell einer Nachricht von Schulz von Thun (2010) geht davon aus, dass eine Nachricht nie eindeutig ist, sondern stets mehrere Botschaften gleichzeitig enthält, die auf der Sachebene, der Appellebene, der Selbstoffenbarungsebene und auf der Beziehungsebene liegen.", "correct": "richtig", "note": null}, {"id": 74, "einheit": 2, "frage": "Das Personalentwicklungsinstrument \"off-the-job\" kann gezielt dafür eingesetzt werden, Mitarbeiter auf den Ruhestand vorzubereiten, dessen Entbindung abzufedern und dafür zu sorgen, das Wissensbestände möglichst innerhalb der Organisation verbleiben.", "correct": "falsch", "note": "Beschrieben wird \"out-off-the-job\""}, {"id": 75, "einheit": 2, "frage": "Grundgedanke des Kompensationsmodells der Motivation und Volition ist die Kompensation von Motivierungs- oder Fähigkeitslücken durch funktionale Mechanismen.", "correct": "richtig", "note": null}, {"id": 76, "einheit": 2, "frage": "In der Theorie der Bedürfnishierarchie nach Maslow (1954) steht das Selbstverwirklichungsbedürfnis auf der höchsten Stufe und kann, entgegen der vier darunter liegenden Bedürfnisgruppen, niemals abschließend befriedigt werden.", "correct": "richtig", "note": null}, {"id": 77, "einheit": 2, "frage": "Im Rahmen des Reifegrad-Modells ist die Anerkennung von Leistungen der Geführten ein Element des aufgabenorientierten Führungsverhaltens.", "correct": "falsch", "note": "es ist beziehungsorientiert"}, {"id": 78, "einheit": 2, "frage": "Im Rahmen der Gestaltung der Führungsbeziehungen durch Führungsinstrumente lassen sich grundsätzlich primär aktive Führungsinstrumente und sekundär passive Führungsinstrumente nach dem Grad der Selbstbestimmtheit in der Anwendung von Führungsinstrumenten unterscheiden.", "correct": "falsch", "note": "beide sind aktiv"}, {"id": 79, "einheit": 2, "frage": "Ein Vorteil des Reifegrad-Modells der Führung ist die Verengung auf eine einzige Situationsvariable, weil dadurch die Nachvollziehbarkeit der Betrachtung erhöht wird.", "correct": "falsch", "note": "das ist ein Nachteil"}, {"id": 80, "einheit": 2, "frage": "Für zentralisierte Kommunikationsnetzwerke besteht bei komplexen Aufgaben die Gefahr, die Informationskapazität der Zentralperson zu überfordern.", "correct": "richtig", "note": null}, {"id": 81, "einheit": 2, "frage": "Im Gegensatz zur motivationalen Steuerungslage wird die volitionale Steuerungslage im Sinne des Kompensationsmodells der Motivation und Volition als förderlich, zielleitend und spaßig empfunden und führt zu einem niedrigen Anstrengungserleben.", "correct": "falsch", "note": "genau umgekehrt"}, {"id": 82, "einheit": 2, "frage": "Im Rahmen des Job-Characteristics-Modell ist die Bedeutsamkeit einer Aufgabe umso höher, je stärker das Ergebnis der Aufgabendurchführung den Charakter einer in sich abgeschlossenen Arbeit take an.", "correct": "falsch", "note": "das beschreibt die Ganzheitlichkeit einer Aufgabe. Die Bedeutsamkeit heißt, dass sie einen wesentlichen Beitrag zum Ziel der Organisation oder für andere darstellt."}, {"id": 83, "einheit": 2, "frage": "Von impliziten Motiven wird gesprochen, wenn eine zur Durchführung einer Tätigkeit vorhandene Motivation unmittelbar aus dieser Aktivität erwächst.", "correct": "falsch", "note": "das beschreibt eher intrinsische Anreize"}, {"id": 84, "einheit": 2, "frage": "Nach Fischer, Ury und Patton (2014) können die Verhandlungsstile Vermeiden und Kompromissfindung als weiche Verhandlungsstile zur Konfliktlösung bezeichnet werden.", "correct": "falsch", "note": "beides Mischform"}, {"id": 85, "einheit": 2, "frage": "Eine ausgeprägte Vertrauensbasis ist für die sich aus dem Kompensationsmodell der Motivation und Volition ergebenen Führungsaufgaben nicht erforderlich.", "correct": "falsch", "note": "ausgeprägte Vertrauensbasis ist sehr erforderlich"}, {"id": 86, "einheit": 2, "frage": "In der Praxis führen fehlende Übung in der Anwendung und Unkenntnis über die Wirkungszusammenhänge von Anerkennung und Kritik oftmals dazu, dass sich eine Führungsbeziehung durch deren Einsatz ungünstig entwickelt.", "correct": "richtig", "note": null}, {"id": 87, "einheit": 2, "frage": "Von einer inkonsistenten Führung kann z.B. gesprochen werden, wenn die Mitarbeitenden die kurzfristigen Schwankungen im Führungsverhalten einer Führungskraft über einen längeren Zeitraum für sich nicht sinnvoll aufgrund des vorherigen Verhaltens, kontextueller Notwendigkeiten oder wahrgenommener Eigenschaften dieser Person einordnen können.", "correct": "richtig", "note": null}, {"id": 88, "einheit": 2, "frage": "Bei einem formalisierten Mitarbeitergespräch werden in der Phase der Standortbestimmung die Leistungsresultate und das Verhalten des Mitarbeiters erfasst.", "correct": "falsch", "note": "Diese werden in Phase 1 Rückblick erfasst"}, {"id": 89, "einheit": 2, "frage": "Sanktionen als Führungsinstrument zur Gestaltung einer Führungsbeziehungen können die Führungsbeziehung belasten bzw. möglicherweise beenden.", "correct": "richtig", "note": null}, {"id": 90, "einheit": 2, "frage": "Gemäß dem Kompensationsmodell der Motivation und Volition sind Diskrepanzen zwischen impliziten und expliziten Motiven mit intrapsychischen Konflikten verbunden.", "correct": "richtig", "note": null}, {"id": 91, "einheit": 2, "frage": "Nach der Vorstellung von Hersey und Blanchard (1982) im Rahmen des Reifegrad-Modells sollen Vorgesetzte in die Lage versetzt werden, den bestehenden Reifegrad eines Mitarbeiters festzustellen, um situationsadäquat führen zu können.", "correct": "richtig", "note": null}, {"id": 92, "einheit": 2, "frage": "Nach der Vorstellung von Hersey und Blanchard (1982) setzt sich der Reifegrad im Rahmen des Reifegrad-Modells aus der \"Arebitsreife\" und der \"psychologischen Reife\" zusammen.", "correct": "richtig", "note": null}, {"id": 93, "einheit": 2, "frage": "Nach der Vorstellung von Hersey und Blanchard (1982) im Rahmen des Reifegrad-Modells lässt sich der Führungsstil „Telling“ einem hohen Reifegrad zuordnen, bei dem aufgrund der hohen Verantwortungsfähigkeit und -bereitschaft des Mitarbeiters die Führungsperson Aufgaben übertragen kann.", "correct": "falsch", "note": "Telling (S1) entspricht einem niedrigen Reifegrad (M1)"}, {"id": 94, "einheit": 2, "frage": "Nach Ansicht von Blake und McCanse (1995) sind allein die vier Problembereiche Informationsbeschaffung, Entscheidungsverhalten, Konfliktlösung und konstruktive Kritik für die Effizienz des Führungsprozesses verantwortlich.", "correct": "falsch", "note": "Es fehlen Meinungsverhalten und Initativverhalten"}, {"id": 95, "einheit": 2, "frage": "In Anlehnung an Thomas und Kilmann (1974) führen lediglich die Verhandlunsstile Zusammenarbeit und Kompromissfindung zu den bestmöglichen Lösungen eines Konflikts.", "correct": "falsch", "note": "Nur Zusammenarbeit, Kompromissfindund ist eine Mischform"}, {"id": 96, "einheit": 2, "frage": "Im Rahmen der Gestaltung der Führungsbeziehungen sind Verhaltensweisen, die Anerkennung und Lob ausdrücken, aus der Perspektive der Führungskraft immer als Führungsinstrument einzuordnen.", "correct": "falsch", "note": "Verhalten einer FK wird erst zu einem Führungsinstrument, wenn es als zielorientierter Beeinflussungsversuch eingesetzt wird."}, {"id": 97, "einheit": 2, "frage": "Unter dem Ausdruck \"RRR des Führungsverhaltens\" verstehen Blake und McCanse (1995) im Rahmen des Verhaltensgittermodells einen Umwandlungsprozess, der über das Beziehungsverhalten einer Führungskraft Ressourcen in Resultate überführt.", "correct": "richtig", "note": null}, {"id": 98, "einheit": 2, "frage": "Für Brenken (2015) gehören Akzeptanz und Transparenz zu den zentralen Anforderungen an ein betriebliches Anreizsystem, nicht aber dessen Wirtschaftlichkeit.", "correct": "falsch", "note": "Akzeptanz, Motivationswirkung, Leistungsorientierung, Gerechtigkeit, Flexibilität, Individualität, Transparenz, Einfachheit, Wirtschaftlichkeit, Interne Konsistenz gehören alle dazu"}, {"id": 99, "einheit": 2, "frage": "Traditionell inhaltstheoretische Ansätze der Motivation erklären auf Basis personenbezogener, nicht aber situationsbezogener Komponenten, was die Grundlage motivierten Verhaltens darstellt.", "correct": "falsch", "note": "Sie beziehen beides mit ein."}, {"id": 100, "einheit": 2, "frage": "Im Sinne des Kompensationsmodells der Motivation und Volition führen fähigkeitsbedingte Schwierigkeiten (fehlende subjektive Fähigkeiten) zu externalen Handlungsbarrieren, die durch volitionale Mechanismen kompensiert werden.", "correct": "falsch", "note": "sie werden durch Problemlösung behoben"}, {"id": 101, "einheit": 2, "frage": "Nach den Vorstellungen von Hersey und Blanchard (1982) im Rahmen des Reifegrad-Modells lässt sich der Führungsstil \"Selling\" einem niedrigen bis mittleren Reifegrad zuordnen, bei dem aufgrund der mangelnden Fähigkeiten des Mitarbeiters die Führungskraft in hohem Maße direktiv führen muss, gleichzeitig aber die Bereitschaft und den Ethusiasmus des Mitarbeiters durch sozio-emotionale Unterstützung stärkt.", "correct": "richtig", "note": null}, {"id": 102, "einheit": 2, "frage": "Bei dem Kommunikationsnetzwerk \"Gabel\" sind alle Mitglieder des Netzwerks auf direktem Wege mit der zentralen Instanz verbunden.", "correct": "falsch", "note": null}, {"id": 103, "einheit": 2, "frage": "Unter dem Verdrängungs- bzw, Korrumpierungseffekt wird im Zusammenhang betrieblicher Anreizsysteme als Führungsinstrument zur Gestaltung von Führungsbeziehungen der Effekt bezeichnet, dass unter bestimmten Bedingungen ein extrinsischer Anreiz zur Verdrängung der intrinsischer Motivation führen kann.", "correct": "richtig", "note": null}, {"id": 104, "einheit": 2, "frage": "Anreizsysteme als Führungsinstrument zur Gestaltung von Führungsbeziehungen können eine Lern- und Informationsfunktion genauso wie eine soziale Funktion entfalten, nicht aber eine Aktivierungsfunktion.", "correct": "falsch", "note": "sie haben Aktivierungs-, Steuerungs-, Informations- und Veränderungsfunktion als Ziel"}, {"id": 105, "einheit": 2, "frage": "Die Kongruenz von impliziten und expliziten Motiven einer Person führt im Sinne des Kompensationsmodells der Motivation und Volition zu extrinsischer Motivation.", "correct": "falsch", "note": "intrinsische Motivation"}, {"id": 106, "einheit": 2, "frage": "Gemäß des Führungsstilkontinuumsansatzes nach Tannebaum und Schmidt (1985) müssen für das Treffen einer situationsgerechten Entscheidung lediglich die Merkmale des Vorgesetzten (Vorgesetztenanalyse) und die Merkmale der Mitarbeiter (Mitarbeiteranalyse) in ein Verhältnis gesetzt werden.", "correct": "falsch", "note": "es fehlt die Situationsanalyse"}, {"id": 107, "einheit": 2, "frage": "Unter dem Ausdruck \"RRR des Führungsverhaltens\" verstehen Blake und McCanse (1995) im Rahmen des Verhaltensgittermodells einen Umwandlungsprozess, der über das Beziehungsverhalten einer Führungskraft Ressourcen in Resultate überführt.", "correct": "richtig", "note": null}, {"id": 108, "einheit": 2, "frage": "Das Job-Characteristics-Modell bewertet die erlebte Sinnhaftigkeit einer Tätigkeit anhand der drei Kerndimensionen der Arbeitsgestaltung Anforderungsvielseitigkeit, Aufgabenganzheitlichkeit und Bedeutsamkeit der Aufgabe.", "correct": "richtig", "note": null}, {"id": 109, "einheit": 2, "frage": "Im Gegensatz zu extrinsischen Anreizen, die sich auf das beabsichtigte Ergebnis der Tätigkeit beziehen, sind intrinsische Anreize im Allgemeinen sehr eng mit dem Vollzug der Tätigkeit verbunden.", "correct": "richtig", "note": null}, {"id": 110, "einheit": 2, "frage": "Das explizite Motivsystem umfasst die von einer Person selbst angegebenen Vorstellungen ihrer handlungsleitenden Präferenzen und sind sozialisationsbedingt (bspw. persönliche Ziele).", "correct": "richtig", "note": null}, {"id": 111, "einheit": 2, "frage": "Gemäß der Zwei-Faktoren Theorie ist ein Job Enlargement ein geeignetes Mittel zur Qualitätssteigerung, nicht aber ein Job Enrichment.", "correct": "falsch", "note": "Job Enrichement dient der Qualitätssteigerung"}, {"id": 112, "einheit": 2, "frage": "Der Prinzipal-Agenten-Ansatz angewendet auf Führungsbeziehungen des Organisationsalltags geht davon aus, dass zwischen Führenden und Geführte ein symmetrisches Informationsverhältnis besteht.", "correct": "falsch", "note": "assymmetrisch zu Gunsten des Geführten"}, {"id": 113, "einheit": 2, "frage": "Ein Ziel einer Vorgesetztenbeurteilung ist die Erstellung einer Übersicht über die genutzten Führungsstile auf gesamtorganisatorischer Ebene.", "correct": "richtig", "note": null}, {"id": 114, "einheit": 2, "frage": "Da im Rahmen der Iowa-Studie der Partizipationsgrad der Mitarbeiter am Entscheidungsprozess untersucht wird und die Ohio-Studien das Führungsverhalten anhand der Aufgaben- und Mitarbeiterorientierung betrachten, wird im Zusammenhang der Iowa-Studien von einem eindimensionalen und bei den Ohio-Studien von einem zweidimensionalen Ansatz gesprochen.", "correct": "richtig", "note": null}, {"id": 115, "einheit": 2, "frage": "Eines der Grundziele, das die Autoren mit dem Modell des Verhaltensgitters verfolgen, ist die Optimierung organisatorischer Produktivität.", "correct": "richtig", "note": null}, {"id": 116, "einheit": 2, "frage": "Im Sinne des Kompensationsmodells der Motivation und Volition entsteht eine optimale Motivation nur dann, wenn zusätzlich zur Kongruenz der beiden Motivkomponenten \"implizite und explizite Motive\" auch die dritte strukturelle Komponente \"subjektive Fähigkeiten\" keine Defizite aufweist.", "correct": "richtig", "note": null}, {"id": 117, "einheit": 2, "frage": "Im Sinne des Kompensationsmodells der Motivation und Volition ist die Existenz entweder eines impliziten oder expliziten Motivs ausreichend, um eine handlungsfähige Motivationslage herzustellen, das Verhältnis beider Motive zueinander ist irrelevant.", "correct": "falsch", "note": "Motivkongruenz ist entscheidend für intrinsische Motivation"}, {"id": 118, "einheit": 2, "frage": "Die Trennung des Führungsstils und seiner Wirkung von den persönlichen Eigenschaften des Führenden im Rahmen der Iowa-Studien ebnete den Weg für eine darauf aufbauende eigenschaftstheoretische Führungsforschung.", "correct": "falsch", "note": "Iowa-Studie ebnete Weg für VERHALTENStheoretisch orientierte Forschung."}, {"id": 119, "einheit": 2, "frage": "Im Verhaltensgittermodell nach Blake und McCanse (1995) zeichnet sich das Führungsverhalten des „Befehl-Gehorsam-Management“ durch eine Rücksichtnahme auf die Bedürfnisse der Mitarbeiter nach zufriedenstellenden zwischenmenschlichen Beziehungen aus und bewirkt ein gemächliches und freundliches Betriebsklima und Arbeitstempo.", "correct": "falsch", "note": "das beschreibt Glacehandschuhmanagement"}, {"id": 120, "einheit": 2, "frage": "Leistung und Zufriedenheit von Mitarbeitern lassen sich im Wesentlichen allein direkt auf den Führungsstil zurückführen.", "correct": "falsch", "note": "nein, genau das lässt sich eben nicht pauschal auf den Führungsstil zurückführen"}, {"id": 121, "einheit": 2, "frage": "Von einem direkten Konflikt wird gesprochen, sofern dieser direkt zwischen hierarchisch gleichgestellten Personen besteht.", "correct": "falsch", "note": "direkter Konflikt = Führer und Gefürte; indirekter Konflikt = 2 Geführte"}, {"id": 122, "einheit": 2, "frage": "Anerkennung und Kritik als Führungsinstrument zur Gestaltung von Führungsbeziehungen erfüllen sowohl eine Informations- und Lernfunktion als auch eine soziale Funktion.", "correct": "richtig", "note": null}, {"id": 123, "einheit": 2, "frage": "Oftmals bilden die Prinzipien des operanten Konditionierens nach Skinner (1953) die Grundlage von Anreizsystemen in Organisationen.", "correct": "richtig", "note": "Skript Seite 106"}, {"id": 124, "einheit": 2, "frage": "In der Theorie der Bedürfnishierarchie geht Maslow (1954) davon aus, dass alle fünf Bedürfnisse zeitgleich verhaltensrelevant sein können.", "correct": "falsch", "note": "Stichwort dynamische Entwicklung"}, {"id": 125, "einheit": 2, "frage": "Die Frustrations-Regressions-Hypothese in der ERG-Theorie besagt, dass wenn ein Bedürfnis nicht befriedigt ist, kein Bedürfnis auf einer höheren Stufe aktiviert werden kann.", "correct": "falsch", "note": "Wird ein höheres Bed. Nicht befriedigt, ist der Abfall auf ein niedrigeres Bedürnis möglich."}, {"id": 126, "einheit": 2, "frage": "Inhaltstheoretische Ansätze der Motivation stellen auf die Arbeitsaufgabe ab.", "correct": "richtig", "note": "Skript Seite 26"}, {"id": 127, "einheit": 2, "frage": "Als ein konsistentes Verhalten eines Führenden kann ein Führungsstil dabei helfen, eine Konformität zwischen Verhaltenserwartungen und faktischem Handeln zu sichern, indem die Äußerung von Verhaltenserwartungen stabilisiert und das Geführtenverhalten routinisiert wird.", "correct": "richtig", "note": "Skript Seite 39"}, {"id": 128, "einheit": 2, "frage": "Im Rahmen des Reifegrad-Modells nach Hersey und Blanchard (1982) verfügen Mitarbeiter, die Verantwortung übernehmen können, aber nicht wollen, über eine hohe psychologische Reife und eine niedrige Arbeitsreife.", "correct": "falsch", "note": "genau umgekehrt"}, {"id": 129, "einheit": 2, "frage": "Nach Bass (1999) sind „idealized influence“, „inspirational motivation“, „intellectual stimulation“ und „individualized consideration” vier zentrale Komponenten einer transformationalen Führung.", "correct": "richtig", "note": null}, {"id": 130, "einheit": 2, "frage": "Bei latenten und manifesten Konflikten handelt es sich um zwei Konfliktarten", "correct": "falsch", "note": "nein, KonfliktFORMEN"}, {"id": 131, "einheit": 2, "frage": "Personalentwicklungsinstrumente „Parallel-the-job“ unterstützen und reflektieren durch die Erfahrungen anderer das eigene Verhalten, während „on-the-job“-Verfahren Lernprozesse in der Auseinandersetzung mit der Tätigkeit selbst provozieren.", "correct": "richtig", "note": null}, {"id": 132, "einheit": 2, "frage": "Ein Ziel der Personalbeurteilung liegt in der gegenseitigen Information und Erwartungsklärung.", "correct": "falsch", "note": "Ziele sind Dokumentation, Leistungsverbesserung, Verhaltensverbesserung und zielgerichteten Steuerung der Personalentwicklung"}, {"id": 133, "einheit": 2, "frage": "Weil es nicht möglich ist, die Motivation von Mitarbeitern unmittelbar und direkt von außen zu beobachten, sondern diese lediglich über Hilfsmittel näher charakterisiert werden kann, bezeichnet man Motivation in der Wissenschaft auch als hypothetisches Konstrukt.", "correct": "richtig", "note": null}, {"id": 134, "einheit": 2, "frage": "In der Zwei-Faktoren-Theorie nach Herzberg wird grundsätzlich zwischen den zwei voneinander unabhängigen Faktoren Motivatoren und Demotivatoren unterschieden.", "correct": "falsch", "note": "Motivatoren und Hygienefaktoren"}, {"id": 135, "einheit": 2, "frage": "Voraussetzungen für eine authentische Führung sind die Selbst-Einsicht und Selbst-Regulation von Führenden.", "correct": "richtig", "note": null}, {"id": 136, "einheit": 2, "frage": "Im Rahmen der Iowa-Studien war die Gruppenleistung bei autokratischer Führung im Falle der Anwesenheit des Führenden etwas höherer als bei demokratischer Führung, im Falle der Abwesenheit des Führenden jedoch niedriger als bei demokratischer Führung.", "correct": "richtig", "note": null}, {"id": 137, "einheit": 2, "frage": "Im Rahmen des Reifegrad-Modells gehen Hersey und Blanchard (1982) davon aus, dass situative Führung auf einem Zusammenspiel von aufgabenorientierter Führung, beziehungsorientierter Führung und dem Reifegrad des Geführten basiert.", "correct": "richtig", "note": null}, {"id": 138, "einheit": 2, "frage": "Die Ausdrücke Leitungs- und Führungsinstrumente sind synonym zu verwenden.", "correct": "falsch", "note": "sie bedürfen der Akzeptanz, ohne sind sie reine Leitungsinstrumente"}, {"id": 139, "einheit": 2, "frage": "Gemäß dem Sender-Empfänger-Modell der Kommunikation ist die Gefahr des Missverstehens dann groß, wenn Kenntnis oder Ausführung erwartet wird, aber keine Antwort.", "correct": "richtig", "note": null}, {"id": 140, "einheit": 2, "frage": "Gemäß dem Vier-Seiten-Modell einer Nachricht von Schulz von Thun (2010) empfängt ein Empfänger eine Nachricht immer auf 4 Ebenen und der Zufall entscheidet, welche Ebene einer Nachricht für den Empfänger besonders prägnant sind.", "correct": "falsch", "note": "Empfänger entscheidet unbewusst, je nachdem welche Ebene für ihn besonders bedeutsam ist."}, {"id": 141, "einheit": 2, "frage": "Die Wirksamkeit des Führungsinstruments \"Anerkennung und Kritik\" hängt nicht nur von den motivationspsychologischen Fertigkeiten, sondern auch vom Wissen über die Geführten ab.", "correct": "richtig", "note": null}, {"id": 142, "einheit": 2, "frage": "Während der „Kreis“ sowie die „vollständige Kommunikation“ vollständig dezentrale Kommunikationsnetzwerke darstellen, sind die Netzwerke „Rad“ und „Gabel“ vollständig zentralisiert.", "correct": "falsch", "note": "zentralisierung nimmt von Rad über Gabel usw ab"}, {"id": 143, "einheit": 2, "frage": "Aktives und Passives Problemmanagement sind zentrale Komponenten einer transformationalen Führung.", "correct": "falsch", "note": "sie sind Komponenten der transaktionalen Führung."}, {"id": 144, "einheit": 2, "frage": "Im Allgemeinen setzt sich ein Kommunikationsprozess in seiner abstrakten Form aus folgenden drei Elementen zusammen: Sender, Empfänger und Rückmeldung bzw. Feedback.", "correct": "falsch", "note": "Es sind 4 Komponenten, die \"Nachricht\" fehlt"}, {"id": 145, "einheit": 2, "frage": "Unter Anerkennung und Kritik versteht man ausschließlich verbale Äußerungen einer Person oder einer Gruppe von Personen, mit der sie einer anderen Person oder Personengruppe gegenüber mitteilen möchte, dass sie deren Verhalten oder Verhaltensergebnis positiv, bzw. negativ bewertet.", "correct": "falsch", "note": "jede Art von Verhalten gilt als Anerkennung oder Kritik"}, {"id": 146, "einheit": 2, "frage": "Anreize lassen sich nach intrinsischen und extrinsischen Anreizarten sowie materiellen und immateriellen Anreizarten unterscheiden.", "correct": "falsch", "note": "genau umgekehrt"}, {"id": 147, "einheit": 2, "frage": "Das Mitarbeitergesrpäch ist ein anspruchsvolles Instrument zur Förderung von eigenverantwortlichem Denken und Handeln und zur unternehmerischen Ausrichtung der Mitarbeiter.", "correct": "richtig", "note": null}, {"id": 148, "einheit": 2, "frage": "Liegt das Ziel einer Personalentwicklung in der Erhöhung der Wettbewerbsfähigkeit, dann ist damit aus Mitarbeitersicht die Verbesserung der Arbeitsleistung gemeint, aus Unternehmenssicht hingegen die Verbesserung der Qualifikationen.", "correct": "falsch", "note": "genau umgekehrt"}, {"id": 149, "einheit": 2, "frage": "Kerngedanke der 360-Grad Beurteilung ist der Einbezug einer kleinen Gruppe direkt nachgeordneter Mitarbeiter, die die Führungskraft in allen Belangen bewerten.", "correct": "falsch", "note": "Einbezogen werden soll ein größerer Personenkreis aus verschiedenen Gruppen (Vorgesetzte, Mitarbeiter, Kollegen etc.)."}, {"id": 150, "einheit": 3, "frage": "Die Anwendung von Technik und Informationstechnologie ist keine notwendige Bedingung für das Auftreten von digitaler Führung.", "correct": "falsch", "note": "doch, genau das ist es"}, {"id": 151, "einheit": 3, "frage": "Der Trend zu evolutiven und polyzentrischen Organisationsformen führt zur Stärkung klassisch hierarchisch aufgebauter Organisationen mit einer monistischen Autoritätsstruktur.", "correct": "falsch", "note": "dieser Trend ist Grundlage pluraler Führungsformen"}, {"id": 152, "einheit": 3, "frage": "Aus inhaltlicher Sicht ist eine glaubwürdige und überzeugende Konzeptualisierung von Shared Leadership letzlich mit der Überwindung des postheroischen Führungsparadigmas verbunden.", "correct": "falsch", "note": "Überwindung des heroischen Führungsparadigmas."}, {"id": 153, "einheit": 3, "frage": "Mit dem Ausdruck \"Hinterkopftheorie\" der Führung wird allgemein die unbewusst wirkende Vorstellung darüber, was einen Führenden ausmacht, bezeichnet.", "correct": "richtig", "note": null}, {"id": 154, "einheit": 3, "frage": "Die Kardinaltugend der Tapferkeit steht für die Fähigkeit des Einzelnen, sich sein Handeln nicht von der Furcht diktieren zu lassen, sondern (zivil-)couragiert dafür einzustehen, was die Klugheit befiehlt.", "correct": "richtig", "note": null}, {"id": 155, "einheit": 3, "frage": "Dadurch, dass die Expertenmacht nicht auf ein spezifisches Feld begrenzt ist, drehen sich bei digitalen Unternehmen die Einflusschancen nahezu um und lassen diese zu einer von unten gesteuerten Expertokratie mutieren.", "correct": "falsch", "note": "Expertise ist auf ein spezifisches Feld begrenzt."}, {"id": 156, "einheit": 3, "frage": "Im Zusammenhang des Empowering Leadershipverhaltens lässt sich hinsichtlich der Zielgröße des Führungsverhaltens ein strukturelles und informelles Empowerment unterscheiden.", "correct": "falsch", "note": "strukturell und psychologisch"}, {"id": 157, "einheit": 3, "frage": "Zu den Kernelementen eines psychologischen Empowerment gehört unter anderem: die Möglichkeit zur individuellen Weiterentwicklung, Zugang zu relevanten Wissen und Zugang zu adäquaten Ressourcen.", "correct": "falsch", "note": "das sind die Elemente des strukturellen Empowerments"}, {"id": 158, "einheit": 3, "frage": "Die Variabilität der organisationalen Strukturgestalt im Spannungsfeld zwischen Zwecktauglichkeit und Umweltanpassung stellt Führung vor Herausforderungen.", "correct": "richtig", "note": null}, {"id": 159, "einheit": 3, "frage": "Die Entscheidungsdezentralisierung und Selbstverantwortung in holokratischen oder heterarchischen Organisationsmodellen führt zu einer Vorstellung von weitestgehender Selbstführung in einem ganzheitlichen System, das von allen Beteiligten als sinnhaft empfunden wird, sich fließend weiterentwickelt und anpasst und letztlich dazu führt, dass Führung überflüssig wird.", "correct": "falsch", "note": "Führung wird breiter verteilt und zu einer Rolle neben anderen, die Fallweise ausgeübt wird."}, {"id": 160, "einheit": 3, "frage": "Zeichhardt (2016) hebt Technikeinsatz, räumliche Trennung, Nicht-Gleichzeitigkeit und Menge der Adressaten wie auch des Inhalts als zentrale Merkmale digitaler Führung hervor.", "correct": "richtig", "note": null}, {"id": 161, "einheit": 3, "frage": "Vor dem Hintergrund der Informationsmacht im Sinne von Yukl und Falbe (1991) ist in Anlehnung an das Modell von Zeichhhardt (2016) mit fortschreitender Digitalisierung von einer Stärkung klassischer Machtpositionen (bzgl. Informationsgewinnung, -verarbeitung, -speicherung oder -verbreitung) auszugehen.", "correct": "falsch", "note": null}, {"id": 162, "einheit": 3, "frage": "Sogenannte Mega-Trends sind breitflächige, langfristige, robuste globale Entwicklungsstrukturen von erheblichem Einwirkungsvermögen, die ihre Kräfte über einen Zeitraum von mehreren Jahrzehnten entfalten.", "correct": "richtig", "note": null}, {"id": 163, "einheit": 3, "frage": "Unter dem Ausdruck \"Humanzentrierung in der Organisationsgestaltung\" wird die grundlegende Einsicht, dass die Lesitung und der Erfolg einer Organisation nicht nur von den \"objektiven\" Arbeitsstrukturen- und abläufen, sondern auch vom Umgang mit den \"subjektiven\" Einstellungen und Kompetenzen ihrer Mitarbeiter abhängen subsummiert.", "correct": "richtig", "note": null}, {"id": 164, "einheit": 3, "frage": "Der Begriff Soziodigitalität verweist auf die untrennbare Einheit zwischen Sozialem und Digitalem.", "correct": "richtig", "note": null}, {"id": 165, "einheit": 3, "frage": "Der Befund, dass komplexe Aufgaben negativ mit den Effekten von Shared Leadership korrelieren, wird unter anderem damit erklärt, dass die Komplexität von Aufgaben und den damit verbundenen Vorteilen oder Nachteilen von Shared Leadership nicht ausreichend kompetenzbasiert differenziert wird, nicht aber damit, dass komplexe Aufgaben generell schlechter gelöst werden.", "correct": "falsch", "note": "beide Erklärungen sind gültig"}, {"id": 166, "einheit": 3, "frage": "Empowering Leadership kann als ein Führungsverhalten interpretiert werden, das mit der Übertragung von Entscheidungsgewalt und Verantwortlichkeit an nachgelagerte Hierarchiestufen einhergeht.", "correct": "richtig", "note": null}, {"id": 167, "einheit": 3, "frage": "Während postheroische Führung ausschließlich eine verantwortliche Führungsperson in den Mittelpunkt rückt, ist die heroische Führung relational ausgerichtet und durch laterale Einflussbeziehungen sowie einen Fokus auf die Qualität von Interaktions- und Beziehungsdynamiken gekennzeichnet.", "correct": "falsch", "note": "genau umgekehrt"}, {"id": 168, "einheit": 3, "frage": "Folgt man der einschlägigen Diskussion, dann werden schlechte Führende vor allem mit destruktiven Verhaltensweisen in Verbindung gebracht.", "correct": "falsch", "note": "schlechte Führer werden durch Persönlichkeitsprägungen differenziert"}, {"id": 169, "einheit": 3, "frage": "Sharma/Kirkman (2015) zählen führungskräftebezogene und geführtenbezogene Faktoren zu den Antezedenzien von Empowering Leadership und postulieren eine Unabhängigkeit gegenüber kontextueller Entstehungsfaktoren.", "correct": "falsch", "note": "alle 3 bilden Antezedenzien ab"}, {"id": 170, "einheit": 3, "frage": "Der Fokus auf den Übertragungsweg von Versuchen der Verhaltensbeeinflussung ist kennzeichnend für die zweite Entwicklungsstufe der Diskussion um eine digitale Führung.", "correct": "falsch", "note": null}, {"id": 171, "einheit": 3, "frage": "Gemäß dem Modell von Zeichhardt (2016) erhöht das Vorhanden-Sein von IT-Schlüsselkompetenzen die Selbstwirksamkeitsüberzeugung von Mitarbeitern, nicht aber deren Möglichkeit zur Einflussnahme auf Entscheidungen.", "correct": "falsch", "note": "Auch diese wird durch die Expertenmacht erhöht."}, {"id": 172, "einheit": 3, "frage": "Im Rahmen der \"do-this!\"-Ethiken fordert die Diskursethik, dass verantwortungsbewusste Menschen in moralischen Konfliktsituationen in einen (inneren) Diskurs mit sich selbst eintreten, um so jene Handlungsalternative bestimmen zu können, für die insgesamt die besten Gründe sprechen.", "correct": "falsch", "note": "das ist der kategorische Imperativ nach Immanuel Kant"}, {"id": 173, "einheit": 3, "frage": "Der \"hellen Seite der Führung\" liegt zugrunde, dass eine erfolgreiche Führung nicht ohne eine ethische Führung zu haben ist.", "correct": "richtig", "note": null}, {"id": 174, "einheit": 3, "frage": "Formen der dezentrierten oder rotierenden Führung werden von solchen Umständen begünstigt, die von jeher ein vertikales, monozentrisches Führen kaum zugelassen haben oder als nicht sehr aussichtsreich erscheinen ließen.", "correct": "richtig", "note": null}, {"id": 175, "einheit": 3, "frage": "Das Modell von Zeichhardt (2016), das E-Leadership als digital-interaktiven Einflussversuch konzipiert, bescheinigt Vertretern der Generation Y ein großes Einflusspotenzial innerhalb der Führer-Geführten-Relationen.", "correct": "richtig", "note": null}, {"id": 176, "einheit": 3, "frage": "Welpe und Kollegen (2018) interpretieren die Beteiligung von Mitarbeitenden an Entscheidungsprozessen, das Gewähren von Autonomie und den Abbau von Bürokratie, Zuversicht in die Kompetenzen der Mitarbeitenden und das Betonen der Sinnhaftigkeit der Arbeit als zentrale Verhaltensweisen einer empowernden Führungskraft.", "correct": "richtig", "note": null}, {"id": 177, "einheit": 3, "frage": "Das Konzept einer „leaderless organization“ betont, dass eine gesamtunternehmerische Führung zwar weiterhin erforderlich ist, diese sich aber von einer Individualführung eindeutig abgrenzen lasse.", "correct": "falsch", "note": null}, {"id": 178, "einheit": 3, "frage": "Die sog. BYOD-Kultur bezieht sich auf den Trend, private Geräte (Smartphones, Laptops oder Tablets) am Arbeitsplatz zu verbieten, um eine klare Grenze zwischen Berufs- und Privatleben zu ziehen.", "correct": "falsch", "note": "es ist die Nutzung privater Geräte am Arbeitsplatz"}, {"id": 179, "einheit": 3, "frage": "Zwischen Führungspersonen mit narzistischen Tendenzen und Empowering Leadership wird ein positiver Zusammenhang erwartet.", "correct": "falsch", "note": "er ist negativ"}, {"id": 180, "einheit": 3, "frage": "Das 4D-Modell der Führung von Franken (2016) schlägt vor, zukünftige Führungsanstrengungen auf die Bereiche Digitalisierung, Diversität, Demokratie und Dynamik zu konzentrieren.", "correct": "richtig", "note": null}, {"id": 181, "einheit": 3, "frage": "Pearce und Kollegen verstehen Shared Leadership, losgelöst von einem bestimmten Führungsstil oder -verhalten, als ein moderierendes Konstrukt, das unter bestimmten Bedingungen das Zustandekommen unterschiedlicher (positiver) Ergebnisse/Wirkungen auf der Gruppenebene erklärt.", "correct": "richtig", "note": null}, {"id": 182, "einheit": 3, "frage": "Forschungsbefunde legen nahe, dass unethische Führungspraktiken lediglich in einigen wenigen Skandalorganisationen anzutreffen sind.", "correct": "falsch", "note": "genau umgekehrt"}, {"id": 183, "einheit": 3, "frage": "Ein „destructive leadership behavior“ ist auch dann gegeben, wenn sich das Verhalten von Führenden zwar zu Gunsten der Geführten, aber zu Lasten der Organisation auswirkt.", "correct": "richtig", "note": null}, {"id": 184, "einheit": 3, "frage": "Die vielzitierte VUCA-Formel ist ein Akronym aus den Initialen der englischen Wörter \"volatility\", \"uncertainty\", \"complexity\" und \"ambiguity\".", "correct": "richtig", "note": null}, {"id": 185, "einheit": 3, "frage": "Als eine wesentliche Stärke wird das emanzipatorische Potenzial von Shared Leadership hervorgehoben, da nicht nur einige wenige mit Führung betraut werden, während der große Rest von Führung ausgeschlossen wird.", "correct": "richtig", "note": null}, {"id": 186, "einheit": 3, "frage": "Ein \"destructive leadership behavior\" ist auch dann gegeben, wenn sich das Verhalten von Führenden zwar zu Gunsten der Geführten, aber zu Lasten der Organisation auswirkt.", "correct": "richtig", "note": null}, {"id": 187, "einheit": 3, "frage": "Wenngleich das Konzept eines \"liquid leadership\" die konsequente Loslösung von festen Punkten in Raum, Zeit und Struktur der (Zusammen-)Arbeit verfolgt, ist die Konzeption inhaltlich gesehen dennoch stark eingegrenzt.", "correct": "falsch", "note": "sie ist frei floatend"}, {"id": 188, "einheit": 3, "frage": "Agilität auf Seiten der Organisation sowie Kooperation und Selbstverantwortlichkeit auf Seiten des Individuums sind typische Reaktionen auf den technologischen Trend der Massenfertigung in der Wirtschaftswelt.", "correct": "falsch", "note": "es sind Reaktionen auf den technologischen Trend Digitalisierung"}, {"id": 189, "einheit": 3, "frage": "Bei einem Lern-Dialog zur Herausbildung von Shared Leadership entsteht im Gesamtergebnis ein Zustand expliziter Koordination, bei dem die Gruppe als Ganzes die Verantwortung für den Prozess übernimmt und gemeinsam führt, Entscheidungen aber dennoch einzelnen Beteiligten zugeschrieben werden.", "correct": "falsch", "note": "emergente Koordination"}, {"id": 190, "einheit": 3, "frage": "Die Kernaussage des toxischen Dreiecks besagt, dass unethische Führung als Folgewirkung schlechter Führer und bzw. oder schlechter Geführter, nicht aber einer schlechten Führungssituation zu erklären ist.", "correct": "falsch", "note": "schlechte Führungssituation wirkt mit ein"}, {"id": 191, "einheit": 3, "frage": "Shared Leadership lässt sich als Teamphänomen interpretieren, das eng mit emergenten Teamprozessen verschmolzen ist und weit über die Vorstellung einer temporären und situationsangemessenen Teilung von Führung hinausgeht.", "correct": "richtig", "note": null}, {"id": 192, "einheit": 3, "frage": "Paulhus und Williams (2002) führen unethische Führung auf eine \"dunkle Triade\" zurück, die folgende Persönlichkeitsprägungen umfasst: Narzissmus, Psychopathie und Machiavellismus.", "correct": "richtig", "note": null}, {"id": 193, "einheit": 3, "frage": "Weil Führung an eine Interaktion zwischen Führenden und Geführten gekoppelt ist, ist es vor allem der veränderte Bedarf an Arbeit, der für Fragen der interaktiven Führung bedeutsam ist.", "correct": "falsch", "note": "die Bedinungen von Arbeit sind bedeutsam"}, {"id": 194, "einheit": 3, "frage": "Unter dem Stichwort \"Digitalen Taylorismus\" werden erweiterte Kontroll- und Eingriffsmöglichkeiten durch \"Big Data\"-Optionen oder Tracking-Techniken gefasst, die führungsseitig zu Perfektionierung von Arbeitsleistung nutzbar sind.", "correct": "richtig", "note": null}, {"id": 195, "einheit": 3, "frage": "Crevani, Lindgren und Packendroff (2007) beschreiben als Vorteile von Shared-Leadership auf gesellschaftlicher Ebene u.a. eine höhere Flexibilität, Wandlungs- und Anpassungsfähigkeit an komplexe Umwelten, eine verbesserte Entscheidungsqualität sowie eine geringere Anfälligkeit im Falle der Abwesenheit eines Führenden.", "correct": "falsch", "note": "Vorteile bestehen auf organisationaler Ebene."}, {"id": 196, "einheit": 3, "frage": "Überträgt man den Kategorischen Imperativ auf den Führungskontext, dann folgt daraus, dass das, was in schwierigen Situationen das Richtige ist, eine Führungskraft im gleichberechtigten Gespräch und in argumentativer Auseinandersetzung mit den jeweils Betroffenen ausmachen sollte.", "correct": "falsch", "note": "Das beschreibt die Diskursethik"}, {"id": 197, "einheit": 3, "frage": "Empowerte Organisationen folgen einem Regelprinzip der Übertragung von Verantwortung und Entscheidungsbefugnis an die Mitarbeiter, was zu produktiveren Ergebnissen führen kann.", "correct": "richtig", "note": null}, {"id": 198, "einheit": 3, "frage": "Im Sinne des Einflussprozessgedankens hat man sich die Akkumulation und Ausübung von Macht im Sinne sozialer Einflussnahme als interaktiven Prozess mit jeweiligen Zielen, Aktionen und Reaktionen vorzustellen.", "correct": "richtig", "note": null}, {"id": 199, "einheit": 3, "frage": "Anstelle der möglichen Vorteile einer vielfältigen Verankerung von Führung wurden vielmehr lange Zeit die koordinativen Probleme fragmentiert-geteilter Führung in ihren ungeplanten und unabgestimmten Facetten gesehen.", "correct": "richtig", "note": null}, {"id": 200, "einheit": 3, "frage": "In Anlehnugn an Weibler (2016, S623ff.) kann eine Führung als ethisch gut bewertet werden, obwohl die Ziele der Führung nicht zu rechtfertigen sind.", "correct": "falsch", "note": "ne, das ist ein Kriterium für schlechte Führung"}, {"id": 201, "einheit": 3, "frage": "In Anlehnung an Palanski und Yammarino (2007) zeichnet sich eine integre Persönlichkeit durch die Attribute Moralität, Authentizität, Entsprechung von Worten und Taten sowie Standhaftigkeit im Angesicht von Widerständen aus.", "correct": "richtig", "note": null}];
+const TOTAL = QUESTIONS.length;
+</script>
+<script>
+(function(){
+  "use strict";
+
+  const state = {
+    layout: null,
+    immediateFeedback: true,
+    randomMode: false,
+    history: [], // Speichert den Pfad der besuchten Fragen
+    currentIndex: 0,
+    view: 'quiz', // 'quiz' | 'evaluation'
+    answers: {}   // id -> { chosen: 'richtig'|'falsch', correct: bool, revealed: bool }
+  };
+
+  const byId = {};
+  QUESTIONS.forEach(q => byId[q.id] = q);
+
+  const einheiten = Array.from(new Set(QUESTIONS.map(q => q.einheit))).sort((a,b)=>a-b);
+
+  // ---------- DOM refs ----------
+  const $ = sel => document.querySelector(sel);
+  const layoutToggle = $('#layoutToggle');
+  const feedbackToggle = $('#feedbackToggle');
+  const randomToggle = $('#randomToggle');
+  const progressMeta = $('#progressMeta');
+  const progressFill = $('#progressFill');
+  const statCorrect = $('#statCorrect');
+  const statWrong = $('#statWrong');
+  const statOpen = $('#statOpen');
+  const statPercent = $('#statPercent');
+  const appEl = document.getElementById('app');
+  const sidebar = $('#sidebar');
+  const sidebarBackdrop = $('#sidebarBackdrop');
+  const sidebarCloseBtn = $('#sidebarCloseBtn');
+  const jumpOpenBtn = $('#jumpOpenBtn');
+  const einheitGrids = $('#einheitGrids');
+  const einheitStatsBody = $('#einheitStatsBody');
+  const openEvalBtn = $('#openEvalBtn');
+  const quizPanel = $('#quizPanel');
+
+  // ---------- Init layout mode ----------
+  function detectLayout(){
+    return window.matchMedia('(min-width: 880px)').matches ? 'desktop' : 'mobile';
+  }
+  state.layout = detectLayout();
+  applyLayout();
+
+  function applyLayout(){
+    appEl.setAttribute('data-layout', state.layout);
+    layoutToggle.setAttribute('aria-checked', state.layout === 'mobile' ? 'true' : 'false');
+    if(state.layout === 'desktop'){
+      sidebar.classList.remove('is-open');
+      sidebarBackdrop.classList.remove('is-open');
+    }
+  }
+
+  layoutToggle.addEventListener('click', () => {
+    state.layout = state.layout === 'mobile' ? 'desktop' : 'mobile';
+    applyLayout();
+  });
+
+  feedbackToggle.addEventListener('click', () => {
+    state.immediateFeedback = !state.immediateFeedback;
+    feedbackToggle.setAttribute('aria-checked', String(state.immediateFeedback));
+    if(state.immediateFeedback){
+      Object.values(state.answers).forEach(a => a.revealed = true);
+    }
+    renderAll();
+  });
+
+  randomToggle.addEventListener('click', () => {
+    state.randomMode = !state.randomMode;
+    randomToggle.setAttribute('aria-checked', String(state.randomMode));
+    renderAll();
+  });
+
+  function openSidebar(){
+    sidebar.classList.add('is-open');
+    sidebarBackdrop.classList.add('is-open');
+  }
+  function closeSidebar(){
+    sidebar.classList.remove('is-open');
+    sidebarBackdrop.classList.remove('is-open');
+  }
+  sidebarCloseBtn.addEventListener('click', closeSidebar);
+  sidebarBackdrop.addEventListener('click', closeSidebar);
+
+  // ---------- Stats ----------
+  function computeStats(){
+    let answered = 0, correct = 0, wrong = 0, saved = 0;
+    const perEinheit = {};
+    einheiten.forEach(e => perEinheit[e] = {answered:0, correct:0, total:0, revealed:0});
+    QUESTIONS.forEach(q => perEinheit[q.einheit].total++);
+
+    Object.keys(state.answers).forEach(idStr => {
+      const a = state.answers[idStr];
+      const q = byId[Number(idStr)];
+      answered++;
+      perEinheit[q.einheit].answered++;
+      if(a.revealed){
+        perEinheit[q.einheit].revealed++;
+        if(a.correct){ correct++; perEinheit[q.einheit].correct++; }
+        else { wrong++; }
+      } else {
+        saved++;
+      }
+    });
+    const open = TOTAL - answered;
+    const evaluated = correct + wrong;
+    const percent = evaluated > 0 ? Math.round((correct/evaluated)*100) : 0;
+    return {answered, correct, wrong, saved, open, evaluated, percent, perEinheit};
+  }
+
+  function questionStatus(id){
+    const a = state.answers[id];
+    if(!a) return 'open';
+    if(!a.revealed) return 'saved';
+    return a.correct ? 'correct' : 'wrong';
+  }
+
+  // ---------- Rendering: header ----------
+  function renderHeader(){
+    const idx = state.currentIndex;
+    const q = QUESTIONS[idx];
+    progressMeta.textContent = 'Frage ' + String(q.id).padStart(3,'0') + ' / ' + TOTAL;
+    const stats = computeStats();
+    progressFill.style.width = Math.round((stats.answered/TOTAL)*100) + '%';
+    statCorrect.textContent = '✓ ' + stats.correct;
+    statWrong.textContent = '✗ ' + stats.wrong;
+    statOpen.textContent = '○ ' + stats.open;
+    statPercent.textContent = stats.evaluated > 0 ? (stats.percent + '%') : '—';
+    return stats;
+  }
+
+  // ---------- Rendering: sidebar ----------
+  function renderSidebar(stats){
+    einheitGrids.innerHTML = '';
+    einheiten.forEach(e => {
+      const wrap = document.createElement('div');
+      wrap.className = 'einheit-block';
+      const title = document.createElement('div');
+      title.className = 'einheit-title';
+      const es = stats.perEinheit[e];
+      title.innerHTML = '<span>Einheit ' + e + '</span><span>' + es.answered + '/' + es.total + '</span>';
+      wrap.appendChild(title);
+      const grid = document.createElement('div');
+      grid.className = 'einheit-grid';
+      QUESTIONS.forEach((q, i) => {
+        if(q.einheit !== e) return;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'q-dot status-' + statusClass(questionStatus(q.id));
+        if(i === state.currentIndex) btn.classList.add('is-current');
+        btn.textContent = q.id;
+        btn.title = 'Frage ' + q.id;
+        btn.addEventListener('click', () => { goTo(i); if(state.layout==='mobile') closeSidebar(); });
+        grid.appendChild(btn);
+      });
+      wrap.appendChild(grid);
+      einheitGrids.appendChild(wrap);
+    });
+
+    einheitStatsBody.innerHTML = '';
+    einheiten.forEach(e => {
+      const es = stats.perEinheit[e];
+      const quote = es.revealed > 0 ? Math.round((es.correct/es.revealed)*100) + '%' : '—';
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>Einheit ' + e + '</td><td class="num">' + es.answered + '/' + es.total + '</td><td class="num">' + es.correct + '</td><td class="num">' + quote + '</td>';
+      einheitStatsBody.appendChild(tr);
+    });
+
+    const firstOpenIdx = QUESTIONS.findIndex(q => !state.answers[q.id]);
+    jumpOpenBtn.disabled = firstOpenIdx === -1;
+    if (firstOpenIdx === -1) {
+      jumpOpenBtn.textContent = 'Alle Fragen beantwortet';
+    } else {
+      jumpOpenBtn.textContent = state.randomMode ? '→ Zufällige offene Frage' : '→ Nächste offene Frage';
+    }
+  }
+
+  function statusClass(status){
+    if(status === 'correct') return 'correct';
+    if(status === 'wrong') return 'wrong';
+    if(status === 'saved') return 'saved';
+    return 'open';
+  }
+
+  jumpOpenBtn.addEventListener('click', () => {
+    if (state.randomMode) {
+      let pool = QUESTIONS.map((_, i) => i).filter(i => !state.answers[QUESTIONS[i].id]);
+      if (pool.length > 0) {
+        const randIdx = pool[Math.floor(Math.random() * pool.length)];
+        goTo(randIdx);
+        if(state.layout==='mobile') closeSidebar();
+      }
+    } else {
+      const idx = QUESTIONS.findIndex(q => !state.answers[q.id]);
+      if(idx !== -1){ goTo(idx); if(state.layout==='mobile') closeSidebar(); }
+    }
+  });
+
+  openEvalBtn.addEventListener('click', () => {
+    revealAllSaved();
+    state.view = 'evaluation';
+    renderAll();
+    if(state.layout==='mobile') closeSidebar();
+    window.scrollTo({top:0, behavior:'auto'});
+  });
+
+  function revealAllSaved(){
+    Object.values(state.answers).forEach(a => a.revealed = true);
+  }
+
+  // ---------- Navigation ----------
+  function goTo(idx, isBack = false){
+    if(idx < 0 || idx >= TOTAL) return;
+    if (!isBack && state.currentIndex !== null && state.currentIndex !== idx) {
+      state.history.push(state.currentIndex);
+      if (state.history.length > 150) state.history.shift(); // Schütze vor zu großem Speicher
+    }
+    state.currentIndex = idx;
+    state.view = 'quiz';
+    renderAll();
+    window.scrollTo({top:0, behavior:'auto'});
+  }
+
+  // ---------- Answering ----------
+  function answer(qid, choice){
+    const q = byId[qid];
+    const isCorrect = choice === q.correct;
+    state.answers[qid] = {
+      chosen: choice,
+      correct: isCorrect,
+      revealed: state.immediateFeedback
+    };
+    renderAll();
+  }
+
+  // ---------- Rendering: quiz panel ----------
+  function renderQuiz(){
+    const idx = state.currentIndex;
+    const q = QUESTIONS[idx];
+    const a = state.answers[q.id];
+
+    let answerRowHtml = '';
+    ['richtig','falsch'].forEach(choice => {
+      let cls = 'answer-btn';
+      if(a){
+        if(!a.revealed){
+          if(a.chosen === choice) cls += ' is-chosen-neutral';
+        } else {
+          if(choice === q.correct) cls += ' is-correct';
+          else if(a.chosen === choice) cls += ' is-wrong';
+        }
+      }
+      const label = choice === 'richtig' ? 'Richtig' : 'Falsch';
+      answerRowHtml += '<button type="button" class="' + cls + '" data-choice="' + choice + '">' + label + '</button>';
+    });
+
+    let feedbackHtml = '';
+    if(a){
+      if(!a.revealed){
+        feedbackHtml = '<div class="feedback-panel fb-saved">' +
+          '<div class="feedback-status fb-saved">GESPEICHERT</div>' +
+          '<div class="feedback-correction">Antwort notiert (' + (a.chosen === 'richtig' ? 'Richtig' : 'Falsch') + ') — Auswertung erfolgt, sobald „Direkte Rückmeldung“ aktiviert oder die Gesamtauswertung geöffnet wird.</div>' +
+          '</div>';
+      } else {
+        const okClass = a.correct ? 'fb-correct' : 'fb-wrong';
+        const statusText = a.correct ? '✓ RICHTIG BEANTWORTET' : '✗ FALSCH BEANTWORTET';
+        let correctionHtml = '';
+        if(!a.correct){
+          correctionHtml = '<div class="feedback-correction">Richtige Antwort: <strong>' + (q.correct === 'richtig' ? 'Richtig' : 'Falsch') + '</strong></div>';
+        }
+        let noteHtml = '';
+        if(q.note){
+          noteHtml = '<div class="feedback-note">' + escapeHtml(q.note) + '</div>';
+        }
+        feedbackHtml = '<div class="feedback-panel ' + okClass + '">' +
+          '<div class="feedback-status ' + okClass + '">' + statusText + '</div>' +
+          correctionHtml + noteHtml +
+          '</div>';
+      }
+    }
+
+    const canGoBack = state.history.length > 0 || (!state.randomMode && idx > 0);
+    const canGoNext = state.randomMode || idx < TOTAL - 1;
+    const nextLabel = state.randomMode ? 'Zufall →' : 'Weiter →';
+
+    quizPanel.innerHTML =
+      '<div class="einheit-label">Einheit ' + q.einheit + '</div>' +
+      '<div class="question-card">' +
+        '<div class="question-number">Frage ' + String(q.id).padStart(3,'0') + ' / ' + TOTAL + '</div>' +
+        '<div class="question-text">' + escapeHtml(q.frage) + '</div>' +
+        '<div class="answer-row">' + answerRowHtml + '</div>' +
+        feedbackHtml +
+      '</div>' +
+      '<div class="nav-row">' +
+        '<button type="button" class="nav-btn" id="prevBtn" ' + (!canGoBack?'disabled':'') + '>← Zurück</button>' +
+        '<div class="nav-center">' +
+          '<button type="button" class="nav-btn mobile-overview-btn" id="mobileOverviewBtn">Übersicht</button>' +
+        '</div>' +
+        '<button type="button" class="nav-btn" id="nextBtn" ' + (!canGoNext?'disabled':'') + '>' + nextLabel + '</button>' +
+      '</div>';
+
+    quizPanel.querySelectorAll('.answer-btn').forEach(btn => {
+      btn.addEventListener('click', () => answer(q.id, btn.getAttribute('data-choice')));
+    });
+
+    const prevBtn = document.getElementById('prevBtn');
+    if(prevBtn) prevBtn.addEventListener('click', () => {
+      if (state.history.length > 0) {
+        const lastIdx = state.history.pop();
+        state.currentIndex = lastIdx;
+        state.view = 'quiz';
+        renderAll();
+        window.scrollTo({top:0, behavior:'auto'});
+      } else if (!state.randomMode && idx > 0) {
+        goTo(idx - 1);
+      }
+    });
+
+    const nextBtn = document.getElementById('nextBtn');
+    if(nextBtn) nextBtn.addEventListener('click', () => {
+      if (state.randomMode) {
+        // Pool 1: Alle unbeantworteten Fragen, außer die aktuelle
+        let pool = QUESTIONS.map((_, i) => i).filter(i => !state.answers[QUESTIONS[i].id] && i !== idx);
+        // Pool 2 (Fallback): Alle Fragen außer der aktuellen (falls alle schon beantwortet sind)
+        if (pool.length === 0) pool = QUESTIONS.map((_, i) => i).filter(i => i !== idx);
+        
+        if (pool.length > 0) {
+          const randIdx = pool[Math.floor(Math.random() * pool.length)];
+          goTo(randIdx);
+        }
+      } else {
+        goTo(idx + 1);
+      }
+    });
+
+    const mobBtn = document.getElementById('mobileOverviewBtn');
+    if(mobBtn) mobBtn.addEventListener('click', openSidebar);
+  }
+
+  function escapeHtml(str){
+    if(str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  // ---------- Rendering: evaluation ----------
+  function renderEvaluation(stats){
+    let metricsHtml =
+      '<div class="eval-metric"><div class="num">' + stats.answered + ' / ' + TOTAL + '</div><div class="label">Beantwortet</div></div>' +
+      '<div class="eval-metric metric-correct"><div class="num">' + stats.correct + '</div><div class="label">Richtig</div></div>' +
+      '<div class="eval-metric metric-wrong"><div class="num">' + stats.wrong + '</div><div class="label">Falsch</div></div>' +
+      '<div class="eval-metric metric-open"><div class="num">' + stats.open + '</div><div class="label">Offen</div></div>' +
+      '<div class="eval-metric"><div class="num">' + (stats.evaluated>0 ? stats.percent+'%' : '—') + '</div><div class="label">Trefferquote</div></div>';
+
+    let tableRows = '';
+    einheiten.forEach(e => {
+      const es = stats.perEinheit[e];
+      const quote = es.revealed > 0 ? Math.round((es.correct/es.revealed)*100) + '%' : '—';
+      tableRows += '<tr><td>Einheit ' + e + '</td><td class="num">' + es.total + '</td><td class="num">' + es.answered + '</td><td class="num">' + es.correct + '</td><td class="num">' + quote + '</td></tr>';
+    });
+
+    const wrongEntries = QUESTIONS
+      .map((q,i) => ({q, i, a: state.answers[q.id]}))
+      .filter(x => x.a && x.a.revealed && !x.a.correct);
+
+    let errorsHtml = '';
+    if(wrongEntries.length === 0){
+      errorsHtml = '<div class="no-errors">Keine ausgewerteten Fehler — entweder alles richtig oder noch nicht ausgewertet.</div>';
+    } else {
+      wrongEntries.forEach(({q,i,a}) => {
+        errorsHtml += '<div class="error-card">' +
+          '<div class="meta">Frage ' + String(q.id).padStart(3,'0') + ' · Einheit ' + q.einheit + '</div>' +
+          '<div class="stmt">' + escapeHtml(q.frage) + '</div>' +
+          '<div class="rows">Deine Antwort: <span class="wrong-val">' + (a.chosen==='richtig'?'Richtig':'Falsch') + '</span> · Richtige Antwort: <span class="right-val">' + (q.correct==='richtig'?'Richtig':'Falsch') + '</span></div>' +
+          (q.note ? '<div class="note">' + escapeHtml(q.note) + '</div>' : '') +
+          '<button type="button" class="jump" data-idx="' + i + '">Zur Frage springen →</button>' +
+        '</div>';
+      });
+    }
+
+    const unrevealedCount = Object.values(state.answers).filter(a => !a.revealed).length;
+    const hintHtml = unrevealedCount > 0
+      ? '<div class="hint-banner">' + unrevealedCount + ' gespeicherte Antwort(en) wurden für diese Auswertung ausgewertet.</div>'
+      : '';
+
+    quizPanel.innerHTML =
+      '<div class="evaluation-panel">' +
+        '<div class="eval-header"><h1>Gesamtauswertung</h1></div>' +
+        hintHtml +
+        '<div class="eval-summary">' + metricsHtml + '</div>' +
+        '<div class="eval-section-title">Trefferquote nach Einheit</div>' +
+        '<table class="eval-table"><thead><tr><th>Einheit</th><th class="num">Fragen</th><th class="num">Beantwortet</th><th class="num">Richtig</th><th class="num">Quote</th></tr></thead><tbody>' + tableRows + '</tbody></table>' +
+        '<div class="eval-section-title">Fehleranalyse</div>' +
+        errorsHtml +
+        '<div class="eval-actions">' +
+          '<button type="button" class="nav-btn" id="backToQuizBtn">← Zurück zur Klausur</button>' +
+          '<button type="button" class="nav-btn" id="resetBtn">Klausur zurücksetzen</button>' +
+        '</div>' +
+      '</div>';
+
+    const back = document.getElementById('backToQuizBtn');
+    if(back) back.addEventListener('click', () => { state.view='quiz'; renderAll(); });
+    const reset = document.getElementById('resetBtn');
+    if(reset) reset.addEventListener('click', () => {
+      if(confirm('Alle Antworten wirklich löschen und die Klausur neu starten?')){
+        state.answers = {};
+        state.currentIndex = 0;
+        state.history = []; // Reset Historie
+        state.view = 'quiz';
+        renderAll();
+      }
+    });
+    quizPanel.querySelectorAll('.jump').forEach(btn => {
+      btn.addEventListener('click', () => goTo(Number(btn.getAttribute('data-idx'))));
+    });
+  }
+
+  // ---------- Master render ----------
+  function renderAll(){
+    const stats = renderHeader();
+    renderSidebar(stats);
+    if(state.view === 'evaluation'){
+      renderEvaluation(stats);
+    } else {
+      renderQuiz();
+    }
+  }
+
+  // Keyboard shortcuts (desktop convenience)
+  document.addEventListener('keydown', (e) => {
+    if(state.view !== 'quiz') return;
+    const tag = (e.target && e.target.tagName) || '';
+    if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+    
+    // Simuliere Button-Klicks für Next/Prev um das Routing sauber durchzuführen
+    if(e.key === 'ArrowRight') {
+      const nextBtn = document.getElementById('nextBtn');
+      if (nextBtn && !nextBtn.disabled) nextBtn.click();
+    }
+    else if(e.key === 'ArrowLeft') {
+      const prevBtn = document.getElementById('prevBtn');
+      if (prevBtn && !prevBtn.disabled) prevBtn.click();
+    }
+    else if(e.key.toLowerCase() === 'r'){
+      const q = QUESTIONS[state.currentIndex];
+      answer(q.id, 'richtig');
+    } else if(e.key.toLowerCase() === 'f'){
+      const q = QUESTIONS[state.currentIndex];
+      answer(q.id, 'falsch');
+    }
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
