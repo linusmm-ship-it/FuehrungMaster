@@ -761,7 +761,7 @@ const appId = "klausurtrainer";
   const confirmResetBtn = $('#confirmResetBtn');
   const cancelResetBtn = $('#cancelResetBtn');
 
-  // ---------- Auth & Cloud Save Logic ----------
+    // ---------- Auth & Cloud Save Logic ----------
   async function initAuth() {
     try {
       if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -769,10 +769,51 @@ const appId = "klausurtrainer";
       } else {
         await signInAnonymously(auth);
       }
+
+      // Bereits gespeicherten Namen aus diesem Browser verwenden
+      const savedUsername = localStorage.getItem("userName");
+
+      if (savedUsername) {
+        username = savedUsername;
+        usernameInput.value = savedUsername;
+        userNameDisplay.textContent = savedUsername;
+
+        // Gespeicherten Fortschritt laden
+        if (currentUser) {
+          try {
+            const docRef = doc(
+              db,
+              'artifacts',
+              appId,
+              'public',
+              'data',
+              'user_progress',
+              username
+            );
+
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              state.answers = data.answers || {};
+              state.currentIndex = data.currentIndex || 0;
+            }
+          } catch (e) {
+            console.error("Fehler beim Laden aus Firestore", e);
+          }
+        }
+
+        loginOverlay.style.display = 'none';
+        appEl.classList.add('is-ready');
+        renderAll();
+      }
+
     } catch (e) {
       console.warn("Auth initialization failed, continuing local only");
-      loginOverlay.style.display = 'none';
-      appEl.classList.add('is-ready');
+
+      // Wenn Anmeldung nicht funktioniert, Login anzeigen
+      loginOverlay.style.display = 'flex';
+      appEl.classList.remove('is-ready');
     }
   }
 
@@ -785,15 +826,29 @@ const appId = "klausurtrainer";
 
   loginBtn.addEventListener('click', async () => {
     const val = usernameInput.value.trim();
-    if(!val) return;
-    
+
+    if (!val) return;
+
     loginBtn.disabled = true;
     loginBtn.textContent = "Lade Daten...";
+
     username = val;
+
+    // Namen dauerhaft für diesen Browser speichern
+    localStorage.setItem("userName", username);
 
     if (currentUser) {
       try {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'user_progress', username);
+        const docRef = doc(
+          db,
+          'artifacts',
+          appId,
+          'public',
+          'data',
+          'user_progress',
+          username
+        );
+
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -804,30 +859,48 @@ const appId = "klausurtrainer";
           state.answers = {};
           state.currentIndex = 0;
         }
+
       } catch (e) {
         console.error("Fehler beim Laden aus Firestore", e);
       }
     }
-    
+
     userNameDisplay.textContent = username;
     loginOverlay.style.display = 'none';
     appEl.classList.add('is-ready');
+
     renderAll();
+
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Lernen starten";
   });
 
   usernameInput.addEventListener('keypress', (e) => {
-    if(e.key === 'Enter') loginBtn.click();
+    if (e.key === 'Enter') {
+      loginBtn.click();
+    }
   });
 
   async function saveProgressToCloud() {
     if (!currentUser || !username) return;
+
     try {
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'user_progress', username);
+      const docRef = doc(
+        db,
+        'artifacts',
+        appId,
+        'public',
+        'data',
+        'user_progress',
+        username
+      );
+
       await setDoc(docRef, {
         answers: state.answers,
         currentIndex: state.currentIndex,
         lastUpdated: new Date().toISOString()
       }, { merge: true });
+
     } catch (e) {
       console.error("Fehler beim Speichern in Firestore", e);
     }
