@@ -703,21 +703,6 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const appId = "klausurtrainer";
 
-let userName = localStorage.getItem("userName");
-
-if (!userName) {
-  userName = prompt("Dein Name für den Klausurtrainer:");
-
-  if (!userName || !userName.trim()) {
-    userName = "Gast";
-  }
-
-  userName = userName.trim();
-  localStorage.setItem("userName", userName);
-}
-
-console.log("Angemeldet als:", userName);
-
   // State Management
   const state = {
     layout: null,
