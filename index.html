@@ -703,7 +703,7 @@ import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/fireb
   const firebaseApp = initializeApp(firebaseConfig);
   const auth = getAuth(firebaseApp);
   const db = getFirestore(firebaseApp);
-  const appId = typeof __app_id !== 'undefined' ? __app_id : 'klausurtrainer';
+  const appId = 'klausurtrainer';
 
   // State Management
   const state = {
