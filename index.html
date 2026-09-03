@@ -598,6 +598,77 @@ button{font-family:inherit;}
   </div>
 </div>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+  window.FirebaseBridge = (() => {
+    const fConfig = typeof window.__firebase_config !== 'undefined' ? JSON.parse(window.__firebase_config) : {
+      apiKey: "AIzaSyCsOlocKGhmgxQ6mY_8srdn_A3cFPj9xak",
+      authDomain: "klausurtrainer-64450.firebaseapp.com",
+      projectId: "klausurtrainer-64450",
+      storageBucket: "klausurtrainer-64450.firebasestorage.app",
+      messagingSenderId: "883044914682",
+      appId: "1:883044914682:web:8202e2bc2a9b6523efc043",
+      measurementId: "G-1ZG82JY462"
+    };
+
+    let app, auth, db, currentUser = null;
+    let readyResolve;
+    const ready = new Promise(resolve => { readyResolve = resolve; });
+
+    try {
+      app = initializeApp(fConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+      onAuthStateChanged(auth, user => {
+        currentUser = user || null;
+        readyResolve(currentUser);
+      });
+      signInAnonymously(auth).catch(err => {
+        console.warn('Firebase Auth nicht verfügbar:', err);
+        readyResolve(null);
+      });
+    } catch (err) {
+      console.warn('Firebase konnte nicht initialisiert werden:', err);
+      readyResolve(null);
+    }
+
+    const keyFor = (name) => encodeURIComponent((name || '').trim().toLowerCase()).slice(0, 120);
+
+    async function load(name) {
+      try {
+        await ready;
+        if (!db || !currentUser || !name) return null;
+        const snap = await getDoc(doc(db, 'progress', keyFor(name)));
+        return snap.exists() ? snap.data() : null;
+      } catch (err) {
+        console.warn('Firebase-Lesen fehlgeschlagen:', err);
+        return null;
+      }
+    }
+
+    async function save(name, data) {
+      try {
+        await ready;
+        if (!db || !currentUser || !name) return false;
+        await setDoc(doc(db, 'progress', keyFor(name)), {
+          ...data,
+          username: name,
+          updatedAt: serverTimestamp(),
+          updatedBy: currentUser.uid
+        }, { merge: true });
+        return true;
+      } catch (err) {
+        console.warn('Firebase-Speichern fehlgeschlagen:', err);
+        return false;
+      }
+    }
+
+    return { ready, load, save };
+  })();
+</script>
 <script>
 const Q_TF = [
   {"id": 1, "type": "tf", "einheit": 1, "frage": "Im Laissez-Faire-Stil ist der Führende besonders kooperativ und stimmt sich intensiv mit den Mitarbeitern ab.", "correct": "falsch", "note": "Laissez-Faire ist ein Verzicht auf Führung, kein kooperativer oder demokratischer Stil."},
@@ -1399,7 +1470,7 @@ const state = {
 };
 
 /* ================================================================
-   PERSISTENCE (localStorage - fully offline, no backend needed)
+   PERSISTENCE (localStorage + Firebase Firestore, with offline fallback)
    ================================================================ */
 const LAST_USER_KEY = 'kt_last_user_v1';
 const LAYOUT_KEY = 'kt_layout_pref_v1';
@@ -1413,9 +1484,8 @@ function getInitialLayout() {
 
 let currentLayout = getInitialLayout();
 
-function saveProgress() {
-  if (!state.username) return;
-  const data = {
+function collectProgress() {
+  return {
     randomOrder: state.randomOrder,
     feedbackEnabled: state.feedbackEnabled,
     quizOrder: state.quizOrder,
@@ -1426,31 +1496,46 @@ function saveProgress() {
     cardStatus: state.cardStatus,
     mode: state.mode
   };
-  try { localStorage.setItem(storageKey(state.username), JSON.stringify(data)); }
-  catch (e) { /* storage unavailable/full - fail silently, app still usable in-session */ }
 }
 
-function loadProgress(username) {
-  try {
-    const raw = localStorage.getItem(storageKey(username));
-    if (!raw) return false;
-    const data = JSON.parse(raw);
-    state.randomOrder = !!data.randomOrder;
-    state.feedbackEnabled = data.feedbackEnabled !== false;
-    state.quizOrder = Array.isArray(data.quizOrder) && data.quizOrder.length === QUIZ_QUESTIONS.length
-      ? data.quizOrder : QUIZ_QUESTIONS.map((_, i) => i);
-    state.cardOrder = Array.isArray(data.cardOrder) && data.cardOrder.length === FLASHCARD_POOL.length
-      ? data.cardOrder : FLASHCARD_POOL.map((_, i) => i);
-    state.quizIndex = Number.isInteger(data.quizIndex) ? data.quizIndex : 0;
-    state.cardIndex = Number.isInteger(data.cardIndex) ? data.cardIndex : 0;
-    state.quizStatus = data.quizStatus && typeof data.quizStatus === 'object' ? data.quizStatus : {};
-    state.cardStatus = data.cardStatus && typeof data.cardStatus === 'object' ? data.cardStatus : {};
-    state.mode = ['quiz', 'flashcards', 'kompendium'].includes(data.mode) ? data.mode : 'quiz';
-  } catch (e) {
-    return false;
-  }
+function applyProgress(data) {
+  if (!data || typeof data !== 'object') return false;
+  state.randomOrder = !!data.randomOrder;
+  state.feedbackEnabled = data.feedbackEnabled !== false;
+  state.quizOrder = Array.isArray(data.quizOrder) && data.quizOrder.length === QUIZ_QUESTIONS.length
+    ? data.quizOrder : QUIZ_QUESTIONS.map((_, i) => i);
+  state.cardOrder = Array.isArray(data.cardOrder) && data.cardOrder.length === FLASHCARD_POOL.length
+    ? data.cardOrder : FLASHCARD_POOL.map((_, i) => i);
+  state.quizIndex = Number.isInteger(data.quizIndex) ? data.quizIndex : 0;
+  state.cardIndex = Number.isInteger(data.cardIndex) ? data.cardIndex : 0;
+  state.quizStatus = data.quizStatus && typeof data.quizStatus === 'object' ? data.quizStatus : {};
+  state.cardStatus = data.cardStatus && typeof data.cardStatus === 'object' ? data.cardStatus : {};
+  state.mode = ['quiz', 'flashcards', 'kompendium'].includes(data.mode) ? data.mode : 'quiz';
   state.quizIndex = Math.min(Math.max(state.quizIndex, 0), Math.max(QUIZ_QUESTIONS.length - 1, 0));
   state.cardIndex = Math.min(Math.max(state.cardIndex, 0), Math.max(FLASHCARD_POOL.length - 1, 0));
+  return true;
+}
+
+function saveProgress() {
+  if (!state.username) return;
+  const data = collectProgress();
+  try { localStorage.setItem(storageKey(state.username), JSON.stringify(data)); }
+  catch (e) {}
+  if (window.FirebaseBridge) window.FirebaseBridge.save(state.username, data);
+}
+
+async function loadProgress(username) {
+  let localData = null;
+  try {
+    const raw = localStorage.getItem(storageKey(username));
+    if (raw) localData = JSON.parse(raw);
+  } catch (e) {}
+
+  const cloudData = window.FirebaseBridge ? await window.FirebaseBridge.load(username) : null;
+  const data = cloudData || localData;
+  if (!data) return false;
+  applyProgress(data);
+  try { localStorage.setItem(storageKey(username), JSON.stringify(data)); } catch (e) {}
   return true;
 }
 
@@ -1961,13 +2046,16 @@ function initResetModal() {
 /* ================================================================
    LOGIN
    ================================================================ */
-function doLogin(name) {
+async function doLogin(name) {
   state.username = name;
   localStorage.setItem(LAST_USER_KEY, name);
-  loadProgress(name);
+  const btn = document.getElementById('loginBtn');
+  if (btn) btn.disabled = true;
+  await loadProgress(name);
   document.getElementById('loginOverlay').style.display = 'none';
   document.getElementById('app').classList.add('is-ready');
   renderAll();
+  if (btn) btn.disabled = false;
 }
 
 function initLogin() {
@@ -1986,8 +2074,8 @@ function initLogin() {
   btn.addEventListener('click', attemptLogin);
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') attemptLogin(); });
 
-  // Returning users with existing progress are logged back in without an extra click.
-  if (savedUser && localStorage.getItem(storageKey(savedUser))) {
+  // Returning users: cloud/local progress is loaded automatically.
+  if (savedUser && (localStorage.getItem(storageKey(savedUser)) || window.FirebaseBridge)) {
     doLogin(savedUser);
   } else {
     input.focus();
@@ -2050,7 +2138,15 @@ function initJumpButton() {
 /* ================================================================
    INIT
    ================================================================ */
-function init() {
+async function waitForFirebaseBridge(timeoutMs = 8000) {
+  const start = Date.now();
+  while (!window.FirebaseBridge && Date.now() - start < timeoutMs) {
+    await new Promise(r => setTimeout(r, 25));
+  }
+  return !!window.FirebaseBridge;
+}
+
+async function init() {
   initTabs();
   initToggles();
   initSidebarControls();
@@ -2058,6 +2154,7 @@ function init() {
   initJumpButton();
   initResetModal();
   applyLayout();
+  await waitForFirebaseBridge();
   initLogin();
 }
 
